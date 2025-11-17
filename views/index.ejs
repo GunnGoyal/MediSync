@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Healthcare Portal</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.pexels.com/photos/4197564/pexels-photo-4197564.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 80px auto;
+            background: rgba(240,248,255,0.95); /* light blue/white */
+            padding: 40px 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 32px;
+            color: #007bff;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            margin: 16px 0;
+            padding: 16px;
+            font-size: 18px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .login-link {
+            display: block;
+            margin-top: 32px;
+            color: #007bff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Healthcare Portal</h1>
+    <a href="/patients/register" class="btn">Register as Patient</a>
+    <a href="/doctors/register" class="btn">Register as Doctor</a>
+    <a href="/login" class="login-link">Already registered? Login here</a>
+    </div>
+</body>
+</html>

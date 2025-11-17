@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctors for <%= specialization %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.pexels.com/photos/4197564/pexels-photo-4197564.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 60px auto;
+            background: rgba(240,248,255,0.97);
+            padding: 40px 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+        }
+        h2 {
+            color: #007bff;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        .doc-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+        .doc-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            padding: 24px 32px;
+            min-width: 220px;
+            text-align: left;
+            font-size: 16px;
+            color: #333;
+        }
+        .doc-name {
+            color: #007bff;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .doc-contact {
+            color: #555;
+            font-size: 15px;
+        }
+        .doc-schedule {
+            color: #888;
+            font-size: 14px;
+        }
+        .book-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .book-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Doctors for <%= specialization %></h2>
+        <div class="doc-list">
+            <% if (doctors.length === 0) { %>
+                <div class="doc-card">No doctors available for this specialization.</div>
+            <% } else { %>
+                <% doctors.forEach(function(doc) { %>
+                    <div class="doc-card">
+                        <div class="doc-name"><%= doc.name %></div>
+                        <div class="doc-contact">Contact: <%= doc.contact %></div>
+                        <div class="doc-schedule">Schedule: <%= doc.schedule %></div>
+                        <a href="/patients/book-appointment/<%= doc.id %>" class="book-btn">Book Appointment</a>
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

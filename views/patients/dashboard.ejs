@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.pexels.com/photos/4197564/pexels-photo-4197564.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 700px;
+            margin: 60px auto;
+            background: rgba(240,248,255,0.97);
+            padding: 40px 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+        }
+        h2 {
+            color: #007bff;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+        .spec-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+        .spec-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            padding: 24px 32px;
+            min-width: 180px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: #007bff;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+        }
+        .spec-card:hover {
+            background: #e3f2fd;
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Choose a Specialization</h2>
+        <div class="welcome" style="font-size:18px; color:#333; margin-bottom:24px; text-align:center;">
+            Welcome, <b><%= patient.name %></b>!
+        </div>
+        <div style="text-align:center; margin-bottom:20px;">
+            <a href="/patients/my-appointments" style="color:#007bff; text-decoration:underline;">View My Appointments</a>
+        </div>
+        <div class="spec-list">
+            <% specializations.forEach(function(spec) { %>
+                <a href="/patients/dashboard/<%= encodeURIComponent(spec) %>" class="spec-card"><%= spec %></a>
+            <% }); %>
+        </div>
+    </div>
+</body>
+</html>

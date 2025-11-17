@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Appointments</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.pexels.com/photos/4197564/pexels-photo-4197564.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 60px auto;
+            background: rgba(240,248,255,0.97);
+            padding: 40px 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+        }
+        h2 {
+            color: #007bff;
+            margin-bottom: 32px;
+        }
+        .welcome {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 24px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        .status {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>My Appointments</h2>
+        <div class="welcome">Welcome, <b><%= patient.name %></b>!</div>
+        
+        <% if (appointments.length === 0) { %>
+            <p style="text-align: center; color: #888; margin-top: 40px;">You have no appointments yet.</p>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Specialization</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% appointments.forEach(function(app) { %>
+                        <tr data-appointment-id="<%= app.id %>">
+                            <td><%= app.doctor_name %></td>
+                            <td><%= app.specialization %></td>
+                            <td><%= app.appointment_date.toISOString().slice(0,10) %></td>
+                            <td><%= app.start_time %> - <%= app.end_time %></td>
+                            <td>
+                                <span class="status status-<%= app.status %>">
+                                    <%= app.status.toUpperCase() %>
+                                </span>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } %>
+        
+        <a href="/patients/dashboard" class="btn">Back to Dashboard</a>
+    </div>
+
+    <!-- Socket.IO Client Script -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        console.log('🔧 Initializing Socket.IO client for patient...');
+        const socket = io();
+        
+        // Patient ID from server-side session
+        const patientId = <%= patient ? patient.id : 'null' %>;
+        console.log('👤 Current patient ID:', patientId);
+        
+        socket.on('connect', function() {
+            console.log('✅ Connected to Socket.IO server');
+            console.log('   Socket ID:', socket.id);
+        });
+        
+        socket.on('connect_error', function(error) {
+            console.error('❌ Connection error:', error);
+        });
+        
+        // Listen for appointment status updates
+        socket.on('appointmentStatusUpdated', function(data) {
+            console.log('📩 Received appointmentStatusUpdated event:', data);
+            console.log('   Event patient ID:', data.patientId, '(type:', typeof data.patientId + ')');
+            console.log('   Current patient ID:', patientId, '(type:', typeof patientId + ')');
+            
+            // Only update if this is for the current patient
+            if (data.patientId !== patientId) {
+                console.log('🔕 Status update not for this patient, ignoring');
+                return;
+            }
+            
+            console.log('✨ Appointment status updated! Updating UI...');
+            
+            // Find the appointment row
+            const row = document.querySelector(`tr[data-appointment-id="${data.appointmentId}"]`);
+            
+            if (!row) {
+                console.log('ℹ️ Appointment not visible on current page view');
+                return;
+            }
+            
+            console.log('📍 Found appointment row, updating status...');
+            
+            // Find the status cell (5th column, index 4)
+            const statusCell = row.cells[4];
+            
+            // Update the status badge
+            const statusSpan = statusCell.querySelector('.status');
+            if (statusSpan) {
+                // Remove old status classes
+                statusSpan.classList.remove('status-pending', 'status-accepted', 'status-rejected');
+                
+                // Add new status class
+                statusSpan.classList.add(`status-${data.status}`);
+                
+                // Update text
+                statusSpan.textContent = data.status.toUpperCase();
+                
+                // Add animation effect with visual feedback
+                const flashColor = data.status === 'accepted' ? '#d4edda' : '#f8d7da';
+                row.style.transition = 'background-color 0.3s ease';
+                row.style.background = flashColor;
+                
+                setTimeout(function() {
+                    row.style.background = '';
+                }, 3000);
+                
+                // Show browser notification if supported
+                if (Notification.permission === 'granted') {
+                    new Notification('Appointment Status Updated', {
+                        body: `Your appointment has been ${data.status}`,
+                        icon: '/favicon.ico'
+                    });
+                }
+                
+                console.log('✅ Status updated to:', data.status.toUpperCase());
+            }
+        });
+        
+        socket.on('disconnect', function() {
+            console.log('⚠️ Disconnected from Socket.IO server');
+        });
+    </script>
+</body>
+</html>
