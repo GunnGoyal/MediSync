@@ -2,33 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Doctor Dashboard</title>
+    <title>Doctor Dashboard - MediSync</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: Arial, sans-serif;
             background: url('https://images.pexels.com/photos/4197564/pexels-photo-4197564.jpeg') no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
-            margin: 0;
+        }
+        .header {
+            background: transparent;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 16px 40px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar .doctor-name {
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .navbar .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+        .navbar .nav-links a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        .navbar .nav-links a:hover {
+            opacity: 0.7;
+            text-decoration: underline;
         }
         .container {
             max-width: 900px;
-            margin: 60px auto;
-            background: rgba(240,248,255,0.97);
-            padding: 40px 32px;
-            border-radius: 16px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.12);
-            text-align: center;
+            margin: 40px auto;
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
         h2 {
-            color: #007bff;
+            color: #4169E1;
             margin-bottom: 32px;
+            text-align: center;
+            font-size: 28px;
         }
         .welcome {
             font-size: 20px;
             color: #333;
             margin-bottom: 24px;
+            text-align: center;
         }
         
         /* Status Controls */
@@ -113,6 +166,26 @@
     </style>
 </head>
 <body>
+    <!-- Hospital Header -->
+    <div class="header">
+        <h1>MediSync</h1>
+    </div>
+    
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="doctor-name">
+            <% if (doctor) { %>
+                Dr. <%= doctor.name %>
+            <% } else { %>
+                Doctor Portal
+            <% } %>
+        </div>
+        <div class="nav-links">
+            <a href="/doctors/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    
     <div class="container">
         <h2>Doctor Dashboard</h2>
         <% if (error) { %>
