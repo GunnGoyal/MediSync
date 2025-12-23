@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Oversight – Medisync Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --secondary: #00d4aa;
+            --secondary-dark: #00a8cc;
+            --accent: #ff6b6b;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #1a1a2e;
+            --light: #f8fafc;
+            --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+            --gradient-admin: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-info: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --gradient-brain: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #d946ef 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-admin);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-back {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--gradient-brain);
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brain-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card-header {
+            padding: 1.25rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-card-header.danger { background: var(--gradient-danger); }
+        .stat-card-header.warning { background: var(--gradient-warning); }
+        .stat-card-header.info { background: var(--gradient-info); }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-info h6 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .stat-info h2 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .stat-card-body {
+            padding: 1rem 1.25rem;
+            background: white;
+        }
+
+        .stat-desc {
+            color: #64748b;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .table-card-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+            padding: 1.25rem 1.5rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-card-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0;
+        }
+
+        .table-card-header .badge-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .custom-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .custom-table th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .custom-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background: rgba(102, 126, 234, 0.03);
+        }
+
+        .patient-name {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .patient-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--gradient-admin);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .medicine-name {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .usage-badge {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .risk-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .risk-badge.high {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+        }
+
+        .risk-badge.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+        }
+
+        .risk-badge.info {
+            background: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--success);
+            margin: 0 auto 1.5rem;
+        }
+
+        .empty-state h4 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #64748b;
+        }
+
+        /* Info Card */
+        .info-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        .info-card-header {
+            background: var(--gradient-brain);
+            padding: 1rem 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .info-card-header h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .info-card-body {
+            padding: 1.5rem;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-list li i {
+            color: #8b5cf6;
+            margin-top: 3px;
+        }
+
+        .info-list li span {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .info-list li strong {
+            color: var(--dark);
+        }
+
+        .risk-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+        }
+
+        .risk-indicator.high {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .risk-indicator.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .custom-table th,
+            .custom-table td {
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card, .table-card, .info-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.15s; }
+        .stat-card:nth-child(3) { animation-delay: 0.2s; }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/">🛡️ Medisync Admin</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/admin/dashboard" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <form method="post" action="/admin/logout" class="d-inline m-0">
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                <div class="brain-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                Prediction System Oversight
+            </h1>
+            <p>Monitor medicine repetition alerts and AI-powered risk detection</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-header danger">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h6>High Risk Cases</h6>
+                        <h2><%= predictions.filter(p => p.risk_level === 'HIGH RISK').length %></h2>
+                    </div>
+                </div>
+                <div class="stat-card-body">
+                    <div class="stat-desc">
+                        <i class="fas fa-info-circle"></i>
+                        6+ medicine uses detected
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h6>Warning Cases</h6>
+                        <h2><%= predictions.filter(p => p.risk_level === 'WARNING').length %></h2>
+                    </div>
+                </div>
+                <div class="stat-card-body">
+                    <div class="stat-desc">
+                        <i class="fas fa-info-circle"></i>
+                        4-5 medicine uses detected
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-header info">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h6>Total Alerts</h6>
+                        <h2><%= predictions.length %></h2>
+                    </div>
+                </div>
+                <div class="stat-card-body">
+                    <div class="stat-desc">
+                        <i class="fas fa-info-circle"></i>
+                        Active medicine repetitions
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Predictions Table -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <h5>
+                    <i class="fas fa-pills"></i>
+                    Medicine Repetition Alerts
+                </h5>
+                <span class="badge-count">Last 2 Months</span>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-user me-2"></i>Patient Name</th>
+                            <th><i class="fas fa-capsules me-2"></i>Medicine Name</th>
+                            <th><i class="fas fa-redo me-2"></i>Usage Count</th>
+                            <th><i class="fas fa-shield-alt me-2"></i>Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (predictions && predictions.length > 0) { %>
+                            <% predictions.forEach(p => { %>
+                                <tr>
+                                    <td>
+                                        <div class="patient-name">
+                                            <div class="patient-avatar">
+                                                <%= p.name ? p.name.charAt(0).toUpperCase() : 'P' %>
+                                            </div>
+                                            <%= p.name %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="medicine-name">
+                                            <i class="fas fa-pill"></i>
+                                            <%= p.medicine_name %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="usage-badge"><%= p.usage_count %> times</span>
+                                    </td>
+                                    <td>
+                                        <% if (p.risk_level === 'HIGH RISK') { %>
+                                            <span class="risk-badge high">
+                                                <i class="fas fa-circle"></i> HIGH RISK
+                                            </span>
+                                        <% } else if (p.risk_level === 'WARNING') { %>
+                                            <span class="risk-badge warning">
+                                                <i class="fas fa-circle"></i> WARNING
+                                            </span>
+                                        <% } else { %>
+                                            <span class="risk-badge info">
+                                                <i class="fas fa-circle"></i> <%= p.risk_level %>
+                                            </span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <h4>No Alerts Detected</h4>
+                                        <p>No medicine repetitions detected in the last 2 months</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- System Notes -->
+        <div class="info-card">
+            <div class="info-card-header">
+                <i class="fas fa-lightbulb"></i>
+                <h5>About the Prediction System</h5>
+            </div>
+            <div class="info-card-body">
+                <ul class="info-list">
+                    <li>
+                        <i class="fas fa-clock"></i>
+                        <span>System analyzes medicine usage patterns over the <strong>last 2 months</strong></span>
+                    </li>
+                    <li>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>
+                            <span class="risk-indicator high"><i class="fas fa-circle"></i> High Risk</span>
+                            6+ uses of same medicine = Possible chronic condition requiring attention
+                        </span>
+                    </li>
+                    <li>
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>
+                            <span class="risk-indicator warning"><i class="fas fa-circle"></i> Warning</span>
+                            4-5 uses = Potential dependency warning
+                        </span>
+                    </li>
+                    <li>
+                        <i class="fas fa-lock"></i>
+                        <span>Admin cannot modify prediction rules – monitoring-only access for transparency</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-clipboard-list"></i>
+                        <span><strong>Recommended Actions:</strong> Review with attending doctors, consider patient counseling if needed</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+        <p>© 2025 Medisync Admin Panel. Connecting Care, Predicting Health.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

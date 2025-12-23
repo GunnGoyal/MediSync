@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment – Medisync</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --secondary-dark: #00a8cc;
+      --accent: #ff6b6b;
+      --warning: #fbbf24;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+      --gradient-patient: linear-gradient(135deg, #0066ff 0%, #0052cc 50%, #667eea 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Animated Background */
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(-45deg, #0066ff, #00d4aa, #667eea, #764ba2);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      opacity: 0.03;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar */
+    .navbar-custom {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+      padding: 1rem 0;
+    }
+
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--gradient-patient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--dark);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      border: 2px solid #e2e8f0;
+    }
+
+    .back-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(0, 102, 255, 0.05);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 3rem 0;
+    }
+
+    /* Booking Card */
+    .booking-container {
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .booking-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      display: flex;
+      min-height: 600px;
+    }
+
+    /* Left Panel */
+    .booking-visual {
+      flex: 0 0 40%;
+      background: var(--gradient-patient);
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .booking-visual::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .booking-visual::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -30%;
+      width: 80%;
+      height: 80%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .visual-content {
+      position: relative;
+      z-index: 1;
+      color: white;
+    }
+
+    .visual-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .visual-content h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .visual-content p {
+      opacity: 0.9;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .feature-list li i {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    /* Right Panel - Form */
+    .booking-form-container {
+      flex: 1;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-header {
+      margin-bottom: 2rem;
+    }
+
+    .form-header h3 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+      color: #64748b;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-label i {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+      padding: 0.875rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+      background: white;
+    }
+
+    .form-control::placeholder {
+      color: #94a3b8;
+    }
+
+    /* Doctor Select Styling */
+    .doctor-select-wrapper {
+      position: relative;
+    }
+
+    .form-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 1rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      padding-right: 3rem;
+    }
+
+    /* Time inputs row */
+    .time-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Submit Button */
+    .btn-book {
+      background: var(--gradient-patient);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-book:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(0, 102, 255, 0.3);
+    }
+
+    .btn-book:active {
+      transform: translateY(0);
+    }
+
+    .btn-back {
+      background: transparent;
+      color: #64748b;
+      border: 2px solid #e2e8f0;
+      padding: 0.875rem 2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .btn-back:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Quick Tips */
+    .quick-tips {
+      background: rgba(0, 102, 255, 0.05);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .quick-tips h5 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quick-tips p {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .booking-card {
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .booking-visual {
+        padding: 2rem;
+        flex: none;
+      }
+
+      .visual-content h2 {
+        font-size: 1.5rem;
+      }
+
+      .feature-list {
+        display: none;
+      }
+
+      .booking-form-container {
+        padding: 2rem;
+      }
+
+      .time-inputs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .booking-card {
+      animation: fadeInUp 0.6s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar-custom">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between">
+        <a class="navbar-brand" href="/">
+          <span>🏥</span> Medisync
+        </a>
+        <a href="/patient/dashboard" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back to Dashboard</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <div class="booking-container">
+        <div class="booking-card">
+          <!-- Left Visual Panel -->
+          <div class="booking-visual">
+            <div class="visual-content">
+              <div class="visual-icon">
+                <i class="fas fa-calendar-plus"></i>
+              </div>
+              <h2>Schedule Your Visit</h2>
+              <p>Book an appointment with our verified healthcare professionals and take control of your health journey.</p>
+              <ul class="feature-list">
+                <li>
+                  <i class="fas fa-check"></i>
+                  <span>Choose from verified specialists</span>
+                </li>
+                <li>
+                  <i class="fas fa-check"></i>
+                  <span>Flexible scheduling options</span>
+                </li>
+                <li>
+                  <i class="fas fa-check"></i>
+                  <span>Instant confirmation</span>
+                </li>
+                <li>
+                  <i class="fas fa-check"></i>
+                  <span>Easy rescheduling</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Right Form Panel -->
+          <div class="booking-form-container">
+            <div class="form-header">
+              <h3>Book Appointment</h3>
+              <p>Fill in the details below to schedule your visit</p>
+            </div>
+
+            <form method="post" action="/patient/book">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-user-md"></i> Select Doctor
+                </label>
+                <div class="doctor-select-wrapper">
+                  <select class="form-select" name="doctor_id" required>
+                    <option value="">Choose a doctor...</option>
+                    <% doctors.forEach(d => { %>
+                      <option value="<%= d.doctor_id %>"><%= d.name %> – <%= d.specialization %></option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-calendar-alt"></i> Appointment Date
+                </label>
+                <input type="date" class="form-control" name="date" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-clock"></i> Time Slot
+                </label>
+                <div class="time-inputs">
+                  <input type="time" class="form-control" name="start_time" placeholder="Start Time" required>
+                  <input type="time" class="form-control" name="end_time" placeholder="End Time" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-comment-medical"></i> Reason for Visit
+                </label>
+                <input type="text" class="form-control" name="reason" placeholder="e.g., General Checkup, Follow-up, Consultation">
+              </div>
+
+              <button type="submit" class="btn-book">
+                <i class="fas fa-calendar-check"></i>
+                Book Appointment
+              </button>
+
+              <a href="/patient/dashboard" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+              </a>
+
+              <div class="quick-tips">
+                <h5><i class="fas fa-lightbulb"></i> Quick Tip</h5>
+                <p>Book appointments at least 24 hours in advance for better availability. You'll receive a confirmation once the doctor accepts your request.</p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Set minimum date to today
+    const dateInput = document.querySelector('input[type="date"]');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+    
+    // Set default date to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInput.value = tomorrow.toISOString().split('T')[0];
+  </script>
+</body>
+</html>

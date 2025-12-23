@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medisync – Connecting Care, Predicting Health</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --accent: #ff6b6b;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+      --gradient-3: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      opacity: 0.05;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar */
+    .navbar-custom {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+      padding: 1rem 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .navbar-custom.scrolled {
+      padding: 0.5rem 0;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .navbar-brand {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: var(--gradient-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-link-custom {
+      color: var(--dark) !important;
+      font-weight: 500;
+      padding: 0.5rem 1rem !important;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      margin: 0 0.25rem;
+    }
+
+    .nav-link-custom:hover {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary) !important;
+    }
+
+    .btn-nav-primary {
+      background: var(--gradient-hero);
+      color: white !important;
+      border: none;
+      padding: 0.6rem 1.5rem !important;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-nav-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-content h1 span {
+      background: var(--gradient-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-content p {
+      font-size: 1.25rem;
+      color: #64748b;
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+      background: var(--gradient-hero);
+      color: white;
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(0, 102, 255, 0.3);
+      color: white;
+    }
+
+    .btn-hero-secondary {
+      background: transparent;
+      color: var(--dark);
+      border: 2px solid #e2e8f0;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-hero-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    /* Floating Elements */
+    .hero-visual {
+      position: relative;
+    }
+
+    .floating-card {
+      position: absolute;
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-card-1 {
+      top: 10%;
+      right: 10%;
+      animation-delay: 0s;
+    }
+
+    .floating-card-2 {
+      bottom: 20%;
+      left: 5%;
+      animation-delay: 2s;
+    }
+
+    .floating-card-3 {
+      top: 50%;
+      right: 5%;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+    }
+
+    .hero-image-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-circle {
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: var(--gradient-hero);
+      opacity: 0.1;
+      position: absolute;
+    }
+
+    .hero-circle-2 {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: var(--gradient-2);
+      opacity: 0.1;
+      position: absolute;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Stats Section */
+    .stats-section {
+      padding: 4rem 0;
+      background: white;
+      margin-top: -50px;
+      border-radius: 30px 30px 0 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      background: var(--gradient-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 0.5rem;
+    }
+
+    /* Features Section */
+    .features-section {
+      padding: 6rem 0;
+      background: var(--light);
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .section-title p {
+      color: #64748b;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      height: 100%;
+      transition: all 0.4s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient-hero);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-icon.blue { background: rgba(0, 102, 255, 0.1); color: var(--primary); }
+    .feature-icon.green { background: rgba(0, 212, 170, 0.1); color: var(--secondary); }
+    .feature-icon.purple { background: rgba(102, 126, 234, 0.1); color: #667eea; }
+    .feature-icon.red { background: rgba(255, 107, 107, 0.1); color: var(--accent); }
+
+    .feature-card h4 {
+      font-weight: 700;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+
+    .feature-card p {
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 6rem 0;
+      background: white;
+    }
+
+    .step-card {
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .step-number {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--gradient-hero);
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .step-card h5 {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-card p {
+      color: #64748b;
+    }
+
+    .step-connector {
+      position: absolute;
+      top: 50px;
+      right: -50%;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), transparent);
+    }
+
+    /* Panels Section */
+    .panels-section {
+      padding: 6rem 0;
+      background: linear-gradient(180deg, var(--light) 0%, white 100%);
+    }
+
+    .panel-card {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s ease;
+      height: 100%;
+    }
+
+    .panel-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+    }
+
+    .panel-header {
+      padding: 2rem;
+      color: white;
+    }
+
+    .panel-header.patient { background: var(--gradient-hero); }
+    .panel-header.doctor { background: var(--gradient-2); }
+    .panel-header.admin { background: var(--gradient-1); }
+
+    .panel-header h3 {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .panel-body {
+      padding: 2rem;
+    }
+
+    .panel-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .panel-feature i {
+      color: var(--secondary);
+      margin-top: 4px;
+    }
+
+    .panel-feature span {
+      color: #475569;
+    }
+
+    .panel-btn {
+      display: block;
+      text-align: center;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin-top: 1.5rem;
+    }
+
+    .panel-btn.patient {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .panel-btn.doctor {
+      background: rgba(0, 212, 170, 0.1);
+      color: #00a8cc;
+    }
+
+    .panel-btn.admin {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .panel-btn:hover {
+      transform: scale(1.02);
+    }
+
+    /* Testimonials */
+    .testimonials-section {
+      padding: 6rem 0;
+      background: var(--dark);
+      color: white;
+    }
+
+    .testimonials-section .section-title h2 {
+      color: white;
+    }
+
+    .testimonials-section .section-title p {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .testimonial-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      height: 100%;
+    }
+
+    .testimonial-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1.5rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .testimonial-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--gradient-hero);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+    }
+
+    .testimonial-role {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 6rem 0;
+      background: var(--gradient-hero);
+      text-align: center;
+      color: white;
+    }
+
+    .cta-section h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-cta {
+      background: white;
+      color: var(--primary);
+      padding: 1rem 3rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      color: var(--primary);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--dark);
+      color: white;
+      padding: 4rem 0 2rem;
+    }
+
+    .footer-brand {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: var(--gradient-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-desc {
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-title {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: white;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--secondary);
+      padding-left: 5px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer-social a {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer-social a:hover {
+      background: var(--gradient-hero);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 3rem;
+      padding-top: 2rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .floating-card {
+        display: none;
+      }
+
+      .step-connector {
+        display: none;
+      }
+    }
+
+    /* Scroll animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand" href="/">🏥 Medisync</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link nav-link-custom" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-custom" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-custom" href="#how-it-works">How It Works</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-custom" href="/auth/login">Login</a></li>
+          <li class="nav-item"><a class="nav-link btn-nav-primary" href="/auth/register">Get Started</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 hero-content">
+          <h1>Transform Your <span>Healthcare</span> Experience</h1>
+          <p>A comprehensive full-stack medical consultation platform that bridges patients and doctors with intelligent health predictions powered by AI and medicine history analysis.</p>
+          <div class="hero-buttons">
+            <a href="/auth/register" class="btn-hero-primary">
+              <i class="fas fa-rocket"></i> Get Started Free
+            </a>
+            <a href="/auth/login" class="btn-hero-secondary">
+              <i class="fas fa-play"></i> Watch Demo
+            </a>
+          </div>
+          <div class="mt-4 d-flex align-items-center gap-4">
+            <div class="d-flex">
+              <div class="rounded-circle bg-primary" style="width: 35px; height: 35px; margin-right: -10px; border: 2px solid white;"></div>
+              <div class="rounded-circle bg-success" style="width: 35px; height: 35px; margin-right: -10px; border: 2px solid white;"></div>
+              <div class="rounded-circle bg-info" style="width: 35px; height: 35px; margin-right: -10px; border: 2px solid white;"></div>
+              <div class="rounded-circle bg-warning" style="width: 35px; height: 35px; border: 2px solid white;"></div>
+            </div>
+            <span class="text-muted">Trusted by <strong>10,000+</strong> users</span>
+          </div>
+        </div>
+        <div class="col-lg-6 hero-visual d-none d-lg-block">
+          <div class="hero-image-container">
+            <div class="hero-circle"></div>
+            <div class="hero-circle-2"></div>
+            <div class="floating-card floating-card-1">
+              <div class="d-flex align-items-center gap-3">
+                <div class="feature-icon blue" style="width: 50px; height: 50px;">
+                  <i class="fas fa-heartbeat"></i>
+                </div>
+                <div>
+                  <div class="fw-bold">Health Score</div>
+                  <div class="text-success fw-bold">92% Excellent</div>
+                </div>
+              </div>
+            </div>
+            <div class="floating-card floating-card-2">
+              <div class="d-flex align-items-center gap-3">
+                <div class="feature-icon green" style="width: 50px; height: 50px;">
+                  <i class="fas fa-calendar-check"></i>
+                </div>
+                <div>
+                  <div class="fw-bold">Appointment</div>
+                  <div class="text-muted">Today, 3:00 PM</div>
+                </div>
+              </div>
+            </div>
+            <div class="floating-card floating-card-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="feature-icon purple" style="width: 50px; height: 50px;">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div>
+                  <div class="fw-bold">Secure Data</div>
+                  <div class="text-muted">256-bit encrypted</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-number">10K+</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Verified Doctors</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-number">50K+</div>
+            <div class="stat-label">Consultations</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-card">
+            <div class="stat-number">99%</div>
+            <div class="stat-label">Satisfaction Rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-title fade-in">
+        <h2>Powerful Features for Modern Healthcare</h2>
+        <p>Everything you need for seamless medical consultations and intelligent health management</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-3 col-md-6 fade-in">
+          <div class="feature-card">
+            <div class="feature-icon blue"><i class="fas fa-user-md"></i></div>
+            <h4>Smart Consultations</h4>
+            <p>Connect with verified healthcare professionals through our intuitive platform for quick and reliable medical advice.</p>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 fade-in">
+          <div class="feature-card">
+            <div class="feature-icon green"><i class="fas fa-brain"></i></div>
+            <h4>AI Predictions</h4>
+            <p>Advanced AI algorithms analyze your medicine history to predict potential health risks and provide personalized insights.</p>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 fade-in">
+          <div class="feature-card">
+            <div class="feature-icon purple"><i class="fas fa-file-prescription"></i></div>
+            <h4>Digital Prescriptions</h4>
+            <p>Access, download, and manage all your prescriptions digitally with automatic medicine repetition alerts.</p>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 fade-in">
+          <div class="feature-card">
+            <div class="feature-icon red"><i class="fas fa-lock"></i></div>
+            <h4>Bank-Level Security</h4>
+            <p>Your health data is protected with enterprise-grade encryption and role-based access controls.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mt-4">
+        <div class="col-lg-4 col-md-6 fade-in">
+          <div class="feature-card">
+            <div class="feature-icon green"><i class="fas fa-chart-line"></i></div>
+            <h4>Health Analytics</h4>
+            <p>Track your health patterns over time with comprehensive analytics and visual reports for better health decisions.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 fade-in">
+          <div class="feature-card">
+            <div class="feature-icon blue"><i class="fas fa-bell"></i></div>
+            <h4>Smart Reminders</h4>
+            <p>Never miss a dose or appointment with intelligent notifications and calendar integrations.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 fade-in">
+          <div class="feature-card">
+            <div class="feature-icon purple"><i class="fas fa-history"></i></div>
+            <h4>Complete History</h4>
+            <p>Access your entire medical history, past consultations, and treatment records in one centralized location.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-title fade-in">
+        <h2>How Medisync Works</h2>
+        <p>Get started in three simple steps and take control of your healthcare journey</p>
+      </div>
+      <div class="row">
+        <div class="col-md-4 fade-in">
+          <div class="step-card">
+            <div class="step-connector d-none d-md-block"></div>
+            <div class="step-number">1</div>
+            <h5>Create Your Account</h5>
+            <p>Sign up as a patient or doctor with a simple registration process. Verify your identity for enhanced security.</p>
+          </div>
+        </div>
+        <div class="col-md-4 fade-in">
+          <div class="step-card">
+            <div class="step-connector d-none d-md-block"></div>
+            <div class="step-number">2</div>
+            <h5>Book Consultation</h5>
+            <p>Browse verified doctors, check availability, and book appointments at your convenience with instant confirmation.</p>
+          </div>
+        </div>
+        <div class="col-md-4 fade-in">
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h5>Get AI Insights</h5>
+            <p>Receive intelligent health predictions, digital prescriptions, and personalized recommendations based on your history.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panels Section -->
+  <section class="panels-section">
+    <div class="container">
+      <div class="section-title fade-in">
+        <h2>Tailored Experience for Everyone</h2>
+        <p>Whether you're a patient, doctor, or administrator, we have the perfect dashboard for you</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-4 fade-in">
+          <div class="panel-card">
+            <div class="panel-header patient">
+              <h3><i class="fas fa-user"></i> Patient Portal</h3>
+            </div>
+            <div class="panel-body">
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Book appointments with verified doctors</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>View and download prescriptions</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>AI-powered health predictions</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Complete medical history access</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Medicine repetition alerts</span>
+              </div>
+              <a href="/auth/register" class="panel-btn patient">Register as Patient →</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 fade-in">
+          <div class="panel-card">
+            <div class="panel-header doctor">
+              <h3><i class="fas fa-user-md"></i> Doctor Dashboard</h3>
+            </div>
+            <div class="panel-body">
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Manage patient appointments</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Create digital prescriptions</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Access patient medical history</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Online consultation tools</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Analytics and reporting</span>
+              </div>
+              <a href="/auth/doctor-register" class="panel-btn doctor">Register as Doctor →</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 fade-in">
+          <div class="panel-card">
+            <div class="panel-header admin">
+              <h3><i class="fas fa-cog"></i> Admin Control</h3>
+            </div>
+            <div class="panel-body">
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Verify and manage doctors</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>System-wide analytics</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Audit logs and security</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Platform configuration</span>
+              </div>
+              <div class="panel-feature">
+                <i class="fas fa-check-circle"></i>
+                <span>User management tools</span>
+              </div>
+              <a href="/admin/login" class="panel-btn admin">Admin Login →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-title fade-in">
+        <h2>What Our Users Say</h2>
+        <p>Join thousands of satisfied users who trust Medisync for their healthcare needs</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-4 fade-in">
+          <div class="testimonial-card">
+            <div class="testimonial-text">
+              "Medisync transformed how I manage my health. The AI predictions helped me identify a potential issue before it became serious. Highly recommended!"
+            </div>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">RS</div>
+              <div>
+                <div class="testimonial-name">Rahul Sharma</div>
+                <div class="testimonial-role">Patient</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 fade-in">
+          <div class="testimonial-card">
+            <div class="testimonial-text">
+              "As a doctor, this platform has streamlined my practice. Digital prescriptions and patient history access make consultations more efficient."
+            </div>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">DP</div>
+              <div>
+                <div class="testimonial-name">Dr. Priya Patel</div>
+                <div class="testimonial-role">Cardiologist</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 fade-in">
+          <div class="testimonial-card">
+            <div class="testimonial-text">
+              "The appointment booking is seamless, and I love how all my medical records are in one place. The interface is beautiful and easy to use!"
+            </div>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">AK</div>
+              <div>
+                <div class="testimonial-name">Ananya Kumar</div>
+                <div class="testimonial-role">Patient</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container fade-in">
+      <h2>Ready to Transform Your Healthcare?</h2>
+      <p>Join thousands of patients and doctors who are already experiencing the future of healthcare with Medisync</p>
+      <a href="/auth/register" class="btn-cta">
+        Start Your Free Journey <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="footer-brand">🏥 Medisync</div>
+          <p class="footer-desc">Connecting Care, Predicting Health. A comprehensive medical consultation platform powered by AI for intelligent health management.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+          <h5 class="footer-title">Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="/auth/login">Login</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+          <h5 class="footer-title">Portals</h5>
+          <ul class="footer-links">
+            <li><a href="/auth/register">Patient Portal</a></li>
+            <li><a href="/auth/doctor-register">Doctor Portal</a></li>
+            <li><a href="/admin/login">Admin Panel</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+          <h5 class="footer-title">Features</h5>
+          <ul class="footer-links">
+            <li><a href="#">AI Predictions</a></li>
+            <li><a href="#">Health Analytics</a></li>
+            <li><a href="#">Prescriptions</a></li>
+            <li><a href="#">Consultations</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+          <h5 class="footer-title">Support</h5>
+          <ul class="footer-links">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Medisync. All rights reserved. Connecting Care, Predicting Health.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar-custom');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Scroll animations
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    fadeElements.forEach(el => observer.observe(el));
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

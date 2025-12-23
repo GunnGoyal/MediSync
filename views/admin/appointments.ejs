@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Monitoring – Medisync Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --secondary: #00d4aa;
+            --secondary-dark: #00a8cc;
+            --accent: #ff6b6b;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --success: #10b981;
+            --info: #3b82f6;
+            --dark: #1a1a2e;
+            --light: #f8fafc;
+            --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+            --gradient-admin: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-calendar: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            --gradient-pending: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --gradient-info: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-admin);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-back {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--gradient-calendar);
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card-inner {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .stat-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            color: white;
+        }
+
+        .stat-icon.total { background: var(--gradient-calendar); }
+        .stat-icon.pending { background: var(--gradient-pending); }
+        .stat-icon.accepted { background: var(--gradient-success); }
+        .stat-icon.rejected { background: var(--gradient-danger); }
+        .stat-icon.completed { background: var(--gradient-info); }
+
+        .stat-info h3 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .stat-info p {
+            color: #64748b;
+            font-weight: 500;
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        /* Filter Card */
+        .filter-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+        }
+
+        .filter-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-title i {
+            color: #8b5cf6;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-btn.all {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .filter-btn.all:hover, .filter-btn.all.active {
+            background: var(--gradient-calendar);
+            color: white;
+            border-color: transparent;
+        }
+
+        .filter-btn.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .filter-btn.pending:hover, .filter-btn.pending.active {
+            background: var(--gradient-pending);
+            color: white;
+            border-color: transparent;
+        }
+
+        .filter-btn.accepted {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .filter-btn.accepted:hover, .filter-btn.accepted.active {
+            background: var(--gradient-success);
+            color: white;
+            border-color: transparent;
+        }
+
+        .filter-btn.rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .filter-btn.rejected:hover, .filter-btn.rejected.active {
+            background: var(--gradient-danger);
+            color: white;
+            border-color: transparent;
+        }
+
+        .filter-btn.completed {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .filter-btn.completed:hover, .filter-btn.completed.active {
+            background: var(--gradient-info);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .table-card-header {
+            background: var(--gradient-calendar);
+            padding: 1.25rem 1.5rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-card-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0;
+        }
+
+        .table-card-header .filter-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.35rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .custom-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .custom-table th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .custom-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        .appointment-id {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .user-avatar.patient {
+            background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+        }
+
+        .user-avatar.doctor {
+            background: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .datetime-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .datetime-date {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .datetime-date i {
+            color: #8b5cf6;
+        }
+
+        .datetime-time {
+            font-size: 0.8rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .datetime-time i {
+            color: #94a3b8;
+        }
+
+        .reason-text {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #475569;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.85rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+        }
+
+        .status-badge.accepted {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+        }
+
+        .status-badge.rejected {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+        }
+
+        .status-badge.completed {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #8b5cf6;
+            margin: 0 auto 1.5rem;
+        }
+
+        .empty-state h4 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #64748b;
+        }
+
+        /* Total Count */
+        .total-count {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 12px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .total-count strong {
+            color: #8b5cf6;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .custom-table th,
+            .custom-table td {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .filter-btn {
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card, .filter-card, .table-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.15s; }
+        .stat-card:nth-child(3) { animation-delay: 0.2s; }
+        .stat-card:nth-child(4) { animation-delay: 0.25s; }
+        .stat-card:nth-child(5) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/">🛡️ Medisync Admin</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/admin/dashboard" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <form method="post" action="/admin/logout" class="d-inline m-0">
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                <div class="header-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                Appointment Monitoring
+            </h1>
+            <p>Track and manage all patient-doctor appointments across the platform</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-inner">
+                    <div class="stat-icon total">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= appointments ? appointments.length : 0 %></h3>
+                        <p>Total Appointments</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-inner">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= appointments ? appointments.filter(a => a.status === 'pending').length : 0 %></h3>
+                        <p>Pending</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-inner">
+                    <div class="stat-icon accepted">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= appointments ? appointments.filter(a => a.status === 'accepted').length : 0 %></h3>
+                        <p>Accepted</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-inner">
+                    <div class="stat-icon rejected">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= appointments ? appointments.filter(a => a.status === 'rejected').length : 0 %></h3>
+                        <p>Rejected</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-inner">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-flag-checkered"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= appointments ? appointments.filter(a => a.status === 'completed').length : 0 %></h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="filter-card">
+            <h5 class="filter-title">
+                <i class="fas fa-filter"></i>
+                Filter by Status
+            </h5>
+            <div class="filter-buttons">
+                <a href="/admin/appointments?status=all" class="filter-btn all <%= filter === 'all' ? 'active' : '' %>">
+                    <i class="fas fa-th-list"></i> All
+                </a>
+                <a href="/admin/appointments?status=pending" class="filter-btn pending <%= filter === 'pending' ? 'active' : '' %>">
+                    <i class="fas fa-clock"></i> Pending
+                </a>
+                <a href="/admin/appointments?status=accepted" class="filter-btn accepted <%= filter === 'accepted' ? 'active' : '' %>">
+                    <i class="fas fa-check"></i> Accepted
+                </a>
+                <a href="/admin/appointments?status=rejected" class="filter-btn rejected <%= filter === 'rejected' ? 'active' : '' %>">
+                    <i class="fas fa-times"></i> Rejected
+                </a>
+                <a href="/admin/appointments?status=completed" class="filter-btn completed <%= filter === 'completed' ? 'active' : '' %>">
+                    <i class="fas fa-flag-checkered"></i> Completed
+                </a>
+            </div>
+        </div>
+
+        <!-- Appointments Table -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <h5>
+                    <i class="fas fa-list-alt"></i>
+                    Appointment List
+                </h5>
+                <span class="filter-badge">Showing: <%= filter %></span>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag me-2"></i>ID</th>
+                            <th><i class="fas fa-user me-2"></i>Patient</th>
+                            <th><i class="fas fa-user-md me-2"></i>Doctor</th>
+                            <th><i class="fas fa-calendar me-2"></i>Date & Time</th>
+                            <th><i class="fas fa-comment-alt me-2"></i>Reason</th>
+                            <th><i class="fas fa-info-circle me-2"></i>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (appointments && appointments.length > 0) { %>
+                            <% appointments.forEach(a => { %>
+                                <tr>
+                                    <td>
+                                        <span class="appointment-id">
+                                            <i class="fas fa-bookmark"></i>
+                                            #<%= a.appointment_id %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar patient">
+                                                <%= a.patient_name ? a.patient_name.charAt(0).toUpperCase() : 'P' %>
+                                            </div>
+                                            <span class="user-name"><%= a.patient_name %></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-info">
+                                            <div class="user-avatar doctor">
+                                                <%= a.doctor_name ? a.doctor_name.charAt(0).toUpperCase() : 'D' %>
+                                            </div>
+                                            <span class="user-name"><%= a.doctor_name %></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="datetime-info">
+                                            <span class="datetime-date">
+                                                <i class="fas fa-calendar-day"></i>
+                                                <%= new Date(a.start_time).toLocaleDateString() %>
+                                            </span>
+                                            <span class="datetime-time">
+                                                <i class="fas fa-clock"></i>
+                                                <%= new Date(a.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %> - <%= new Date(a.end_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="reason-text" title="<%= a.reason || 'N/A' %>">
+                                            <%= a.reason || 'N/A' %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge <%= a.status %>">
+                                            <% if (a.status === 'pending') { %>
+                                                <i class="fas fa-clock"></i>
+                                            <% } else if (a.status === 'accepted') { %>
+                                                <i class="fas fa-check"></i>
+                                            <% } else if (a.status === 'rejected') { %>
+                                                <i class="fas fa-times"></i>
+                                            <% } else if (a.status === 'completed') { %>
+                                                <i class="fas fa-flag-checkered"></i>
+                                            <% } %>
+                                            <%= a.status.toUpperCase() %>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">
+                                            <i class="fas fa-calendar-times"></i>
+                                        </div>
+                                        <h4>No Appointments Found</h4>
+                                        <p>There are no appointments matching your current filter</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Total Count -->
+        <div class="total-count">
+            <i class="fas fa-chart-bar me-2"></i>
+            Total Appointments Displayed: <strong><%= appointments ? appointments.length : 0 %></strong>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+        <p>© 2025 Medisync Admin Panel. Connecting Care, Predicting Health.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Registration Type – Medisync</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --accent: #ff6b6b;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+      --gradient-3: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: var(--gradient-hero);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background Shapes */
+    .bg-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 15s ease-in-out infinite;
+    }
+
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      top: -150px;
+      left: -100px;
+      animation-delay: 0s;
+    }
+
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      top: 50%;
+      right: -100px;
+      animation-delay: 5s;
+    }
+
+    .shape-3 {
+      width: 150px;
+      height: 150px;
+      bottom: -75px;
+      left: 30%;
+      animation-delay: 10s;
+    }
+
+    .shape-4 {
+      width: 100px;
+      height: 100px;
+      top: 20%;
+      right: 20%;
+      animation-delay: 7s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(10deg); }
+    }
+
+    /* Back Button */
+    .back-home {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.75rem 1.25rem;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .back-home:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      transform: translateX(-5px);
+    }
+
+    /* Main Container */
+    .choice-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .choice-card {
+      background: white;
+      border-radius: 32px;
+      padding: 3.5rem;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Header */
+    .choice-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .brand-logo {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .brand-name {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .brand-tagline {
+      color: #64748b;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .choice-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    /* Choice Cards */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .role-card {
+      background: var(--light);
+      border: 3px solid transparent;
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .role-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--gradient-hero);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .role-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .role-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .role-card.patient:hover {
+      border-color: var(--primary);
+    }
+
+    .role-card.doctor:hover {
+      border-color: var(--secondary);
+    }
+
+    .role-icon {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 0 auto 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .role-card.patient .role-icon {
+      background: rgba(0, 102, 255, 0.1);
+    }
+
+    .role-card.doctor .role-icon {
+      background: rgba(0, 212, 170, 0.1);
+    }
+
+    .role-card:hover .role-icon {
+      transform: scale(1.1);
+    }
+
+    .role-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .role-card.patient .role-title {
+      color: var(--primary);
+    }
+
+    .role-card.doctor .role-title {
+      color: #00a8cc;
+    }
+
+    .role-description {
+      color: #64748b;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .role-features {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+
+    .role-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+
+    .role-feature i {
+      color: var(--secondary);
+      font-size: 0.8rem;
+    }
+
+    .btn-role {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn-role.patient {
+      background: var(--gradient-hero);
+      color: white;
+    }
+
+    .btn-role.doctor {
+      background: var(--gradient-2);
+      color: white;
+    }
+
+    .btn-role:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      color: white;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 2rem 0;
+      color: #94a3b8;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .divider span {
+      padding: 0 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* Footer Links */
+    .choice-footer {
+      text-align: center;
+    }
+
+    .login-link {
+      color: #64748b;
+      font-size: 1rem;
+    }
+
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .login-link a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    .admin-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .admin-link:hover {
+      background: rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .choice-card {
+        padding: 2rem;
+      }
+
+      .choices-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .choice-title {
+        font-size: 1.4rem;
+      }
+
+      .back-home {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-up {
+      animation: slideUp 0.6s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Shapes -->
+  <div class="bg-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+  </div>
+
+  <!-- Back Home Button -->
+  <a href="/" class="back-home">
+    <i class="fas fa-arrow-left"></i> Back to Home
+  </a>
+
+  <!-- Main Content -->
+  <div class="choice-container fade-in">
+    <div class="choice-card">
+      <!-- Header -->
+      <div class="choice-header">
+        <div class="brand-logo">🏥</div>
+        <h1 class="brand-name">Medisync</h1>
+        <p class="brand-tagline">Connecting Care, Predicting Health</p>
+        <h2 class="choice-title">How would you like to join us?</h2>
+      </div>
+
+      <!-- Choice Cards -->
+      <div class="choices-grid">
+        <!-- Patient Card -->
+        <div class="role-card patient slide-up" style="animation-delay: 0.1s;">
+          <div class="role-icon">👤</div>
+          <h3 class="role-title">I'm a Patient</h3>
+          <p class="role-description">
+            Access world-class healthcare from the comfort of your home with AI-powered insights
+          </p>
+          <div class="role-features">
+            <div class="role-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Book appointments with verified doctors</span>
+            </div>
+            <div class="role-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>AI-powered health predictions</span>
+            </div>
+            <div class="role-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Digital prescriptions & history</span>
+            </div>
+            <div class="role-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Medicine repetition alerts</span>
+            </div>
+          </div>
+          <a href="/auth/patient/register" class="btn-role patient">
+            <i class="fas fa-user-plus"></i> Register as Patient
+          </a>
+        </div>
+
+        <!-- Doctor Card -->
+        <div class="role-card doctor slide-up" style="animation-delay: 0.2s;">
+          <div class="role-icon">👨‍⚕️</div>
+          <h3 class="role-title">I'm a Doctor</h3>
+          <p class="role-description">
+            Join our network of healthcare professionals and expand your digital practice
+          </p>
+          <div class="role-features">
+            <div class="role-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Manage patient appointments</span>
+            </div>
+            <div class="role-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Create digital prescriptions</span>
+            </div>
+            <div class="role-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Access patient medical history</span>
+            </div>
+            <div class="role-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Analytics & reporting tools</span>
+            </div>
+          </div>
+          <a href="/auth/doctor/register" class="btn-role doctor">
+            <i class="fas fa-user-md"></i> Register as Doctor
+          </a>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <!-- Footer -->
+      <div class="choice-footer">
+        <p class="login-link">
+          Already have an account? <a href="/auth/login">Sign in here</a>
+        </p>
+        <a href="/admin/login" class="admin-link">
+          <i class="fas fa-user-shield"></i> Admin Login
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

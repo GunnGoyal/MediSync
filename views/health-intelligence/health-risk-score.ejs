@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Risk Score - Medisync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --secondary: #00d4aa;
+            --secondary-dark: #00a8cc;
+            --accent: #ff6b6b;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #1a1a2e;
+            --light: #f8fafc;
+            --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+            --gradient-risk: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 50%, #f59e0b 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-back {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--gradient-risk);
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Score Card */
+        .score-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+        }
+
+        .score-card.critical::before { background: var(--gradient-danger); }
+        .score-card.high::before { background: var(--gradient-warning); }
+        .score-card.moderate::before { background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); }
+        .score-card.low::before { background: var(--gradient-success); }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            color: white;
+            font-weight: 800;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 3px dashed rgba(0, 0, 0, 0.1);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .score-circle.critical { background: var(--gradient-danger); }
+        .score-circle.high { background: var(--gradient-warning); }
+        .score-circle.moderate { background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); }
+        .score-circle.low { background: var(--gradient-success); }
+
+        .score-number {
+            font-size: 3.5rem;
+            line-height: 1;
+        }
+
+        .score-max {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .score-label {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .risk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .risk-badge.critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .risk-badge.high {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        .risk-badge.moderate {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .risk-badge.low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .calc-date {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Risk Level Legend */
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .legend-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .legend-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .legend-card.critical { border-color: rgba(239, 68, 68, 0.3); }
+        .legend-card.high { border-color: rgba(245, 158, 11, 0.3); }
+        .legend-card.moderate { border-color: rgba(59, 130, 246, 0.3); }
+        .legend-card.low { border-color: rgba(16, 185, 129, 0.3); }
+
+        .legend-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .legend-label {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .legend-range {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        /* Factor Card */
+        .factor-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .factor-card-header {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .factor-card-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .factor-card-header h5 i {
+            color: var(--primary);
+        }
+
+        .factor-card-body {
+            padding: 1.5rem;
+        }
+
+        .factor-intro {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Factor Items */
+        .factor-item {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.02) 0%, rgba(102, 126, 234, 0.02) 100%);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .factor-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .factor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .factor-title {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .factor-title i {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .factor-title i.age {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .factor-title i.medicine {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--secondary-dark);
+        }
+
+        .factor-title i.disease {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .factor-title i.allergy {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--accent);
+        }
+
+        .factor-score {
+            font-weight: 700;
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .factor-score.blue {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .factor-score.teal {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--secondary-dark);
+        }
+
+        .factor-score.purple {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .factor-score.pink {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--accent);
+        }
+
+        .factor-bar {
+            background: #e2e8f0;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .factor-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .factor-fill.blue { background: linear-gradient(90deg, #0066ff 0%, #667eea 100%); }
+        .factor-fill.teal { background: linear-gradient(90deg, #00d4aa 0%, #00a8cc 100%); }
+        .factor-fill.purple { background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); }
+        .factor-fill.pink { background: linear-gradient(90deg, #ff6b6b 0%, #ee5a5a 100%); }
+
+        .factor-details {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .factor-details strong {
+            color: var(--dark);
+        }
+
+        /* Understanding Card */
+        .understanding-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .understanding-header {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(0, 102, 255, 0.1);
+        }
+
+        .understanding-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .understanding-body {
+            padding: 1.5rem;
+        }
+
+        .understanding-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .understanding-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .understanding-icon {
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .understanding-content h6 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .understanding-content p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Recommendations Card */
+        .recommendations-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--warning);
+        }
+
+        .recommendations-header {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .recommendations-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #d97706;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .recommendations-body {
+            padding: 1.5rem;
+        }
+
+        .recommendation-item {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.03) 0%, rgba(102, 126, 234, 0.03) 100%);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--primary);
+        }
+
+        .recommendation-item.critical {
+            border-left-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .recommendation-item.high {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .recommendation-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .recommendation-type {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .recommendation-item.critical .recommendation-type { color: var(--danger); }
+        .recommendation-item.high .recommendation-type { color: #d97706; }
+
+        .recommendation-message {
+            color: #64748b;
+        }
+
+        /* Tips Card */
+        .tips-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--success);
+        }
+
+        .tips-header {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .tips-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .tips-body {
+            padding: 1.5rem;
+        }
+
+        .tips-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tips-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .tips-list li:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .tips-list li i {
+            color: var(--success);
+            margin-top: 4px;
+        }
+
+        .tips-list li strong {
+            color: var(--dark);
+        }
+
+        .tips-list li span {
+            color: #64748b;
+        }
+
+        /* Back Buttons */
+        .back-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn-back-main {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            color: var(--dark);
+            border: 2px solid #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back-main:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-back-main.primary {
+            background: var(--gradient-hero);
+            color: white;
+            border: none;
+        }
+
+        .btn-back-main.primary:hover {
+            box-shadow: 0 10px 25px rgba(0, 102, 255, 0.3);
+            color: white;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-number {
+                font-size: 2.5rem;
+            }
+
+            .legend-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .understanding-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .score-card, .legend-card, .factor-card, .understanding-card, .recommendations-card, .tips-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .legend-card:nth-child(1) { animation-delay: 0.1s; }
+        .legend-card:nth-child(2) { animation-delay: 0.15s; }
+        .legend-card:nth-child(3) { animation-delay: 0.2s; }
+        .legend-card:nth-child(4) { animation-delay: 0.25s; }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/">🏥 Medisync</a>
+            <a href="/health-intelligence/dashboard" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Health Intelligence
+            </a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                <i class="fas fa-heart-pulse"></i>
+                Health Risk Score
+            </h1>
+            <p>Comprehensive health risk assessment based on multiple factors</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Main Score Display -->
+        <div class="score-card <%= report.riskScore.risk_level %>">
+            <div class="score-circle <%= report.riskScore.risk_level %>">
+                <span class="score-number"><%= report.riskScore.risk_score %></span>
+                <span class="score-max">/ 100</span>
+            </div>
+            <p class="score-label">Overall Risk Level</p>
+            <% if (report.riskScore.risk_level === 'critical') { %>
+                <span class="risk-badge critical">
+                    <i class="fas fa-exclamation-triangle"></i> CRITICAL RISK
+                </span>
+            <% } else if (report.riskScore.risk_level === 'high') { %>
+                <span class="risk-badge high">
+                    <i class="fas fa-exclamation-circle"></i> HIGH RISK
+                </span>
+            <% } else if (report.riskScore.risk_level === 'moderate') { %>
+                <span class="risk-badge moderate">
+                    <i class="fas fa-info-circle"></i> MODERATE RISK
+                </span>
+            <% } else { %>
+                <span class="risk-badge low">
+                    <i class="fas fa-check-circle"></i> LOW RISK
+                </span>
+            <% } %>
+            <p class="calc-date">
+                <i class="fas fa-clock"></i> Last calculated: <%= new Date(report.riskScore.calculated_at).toLocaleDateString() %>
+            </p>
+        </div>
+
+        <!-- Risk Level Legend -->
+        <div class="legend-grid">
+            <div class="legend-card critical">
+                <div class="legend-icon">🔴</div>
+                <div class="legend-label">Critical</div>
+                <div class="legend-range">80 - 100</div>
+            </div>
+            <div class="legend-card high">
+                <div class="legend-icon">🟠</div>
+                <div class="legend-label">High</div>
+                <div class="legend-range">60 - 79</div>
+            </div>
+            <div class="legend-card moderate">
+                <div class="legend-icon">🟡</div>
+                <div class="legend-label">Moderate</div>
+                <div class="legend-range">40 - 59</div>
+            </div>
+            <div class="legend-card low">
+                <div class="legend-icon">🟢</div>
+                <div class="legend-label">Low</div>
+                <div class="legend-range">0 - 39</div>
+            </div>
+        </div>
+
+        <!-- Risk Factor Breakdown -->
+        <div class="factor-card">
+            <div class="factor-card-header">
+                <h5><i class="fas fa-chart-bar"></i> Risk Factor Analysis</h5>
+            </div>
+            <div class="factor-card-body">
+                <p class="factor-intro">Your health risk is calculated from 4 key factors (each has a maximum weight):</p>
+                
+                <!-- Age Factor -->
+                <div class="factor-item">
+                    <div class="factor-header">
+                        <span class="factor-title">
+                            <i class="fas fa-calendar age"></i>
+                            Age Factor (Max: 15 pts)
+                        </span>
+                        <span class="factor-score blue"><%= report.riskScore.factors.ageFactor.toFixed(1) %> / 15</span>
+                    </div>
+                    <div class="factor-bar">
+                        <div class="factor-fill blue" style="width: <%= (report.riskScore.factors.ageFactor / 15 * 100).toFixed(0) %>%"></div>
+                    </div>
+                    <div class="factor-details">Your age contributes to overall health risk</div>
+                </div>
+
+                <!-- Medicine Frequency Factor -->
+                <div class="factor-item">
+                    <div class="factor-header">
+                        <span class="factor-title">
+                            <i class="fas fa-pills medicine"></i>
+                            Medicine Frequency (Max: 30 pts)
+                        </span>
+                        <span class="factor-score teal"><%= report.riskScore.factors.medicineFactor.toFixed(1) %> / 30</span>
+                    </div>
+                    <div class="factor-bar">
+                        <div class="factor-fill teal" style="width: <%= (report.riskScore.factors.medicineFactor / 30 * 100).toFixed(0) %>%"></div>
+                    </div>
+                    <div class="factor-details">Total prescriptions: <strong><%= report.riskScore.factors.totalPrescriptions %></strong></div>
+                </div>
+
+                <!-- Disease Pattern Factor -->
+                <div class="factor-item">
+                    <div class="factor-header">
+                        <span class="factor-title">
+                            <i class="fas fa-stethoscope disease"></i>
+                            Disease Pattern (Max: 35 pts)
+                        </span>
+                        <span class="factor-score purple"><%= report.riskScore.factors.diseaseFactor.toFixed(1) %> / 35</span>
+                    </div>
+                    <div class="factor-bar">
+                        <div class="factor-fill purple" style="width: <%= (report.riskScore.factors.diseaseFactor / 35 * 100).toFixed(0) %>%"></div>
+                    </div>
+                    <div class="factor-details">Unique diseases: <strong><%= report.riskScore.factors.totalDiseases %></strong> | Chronic conditions: <strong><%= report.riskScore.factors.chronicCount %></strong></div>
+                </div>
+
+                <!-- Allergy Factor -->
+                <div class="factor-item">
+                    <div class="factor-header">
+                        <span class="factor-title">
+                            <i class="fas fa-flask-vial allergy"></i>
+                            Allergy Factor (Max: 20 pts)
+                        </span>
+                        <span class="factor-score pink"><%= report.riskScore.factors.allergyFactor.toFixed(1) %> / 20</span>
+                    </div>
+                    <div class="factor-bar">
+                        <div class="factor-fill pink" style="width: <%= (report.riskScore.factors.allergyFactor / 20 * 100).toFixed(0) %>%"></div>
+                    </div>
+                    <div class="factor-details">Allergy incidents: <strong><%= report.riskScore.factors.allergyIncidents %></strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Understanding Your Score -->
+        <div class="understanding-card">
+            <div class="understanding-header">
+                <h5><i class="fas fa-info-circle"></i> Understanding Your Score</h5>
+            </div>
+            <div class="understanding-body">
+                <div class="understanding-grid">
+                    <div class="understanding-item">
+                        <span class="understanding-icon">📅</span>
+                        <div class="understanding-content">
+                            <h6>Age Factor</h6>
+                            <p>Older age typically correlates with higher health risks. Maximum contribution: 15 points.</p>
+                        </div>
+                    </div>
+                    <div class="understanding-item">
+                        <span class="understanding-icon">💊</span>
+                        <div class="understanding-content">
+                            <h6>Medicine Frequency</h6>
+                            <p>Taking multiple medications increases risk for interactions and side effects. Maximum contribution: 30 points.</p>
+                        </div>
+                    </div>
+                    <div class="understanding-item">
+                        <span class="understanding-icon">🏥</span>
+                        <div class="understanding-content">
+                            <h6>Disease Patterns</h6>
+                            <p>Chronic and recurring diseases indicate ongoing health challenges. Maximum contribution: 35 points.</p>
+                        </div>
+                    </div>
+                    <div class="understanding-item">
+                        <span class="understanding-icon">⚠️</span>
+                        <div class="understanding-content">
+                            <h6>Allergies</h6>
+                            <p>Known allergies and reported reactions increase risk during treatment. Maximum contribution: 20 points.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <% if (report.recommendations && report.recommendations.length > 0) { %>
+            <div class="recommendations-card">
+                <div class="recommendations-header">
+                    <h5><i class="fas fa-clipboard-list"></i> Health Recommendations</h5>
+                </div>
+                <div class="recommendations-body">
+                    <% report.recommendations.forEach(rec => { %>
+                        <div class="recommendation-item <%= rec.type.includes('CRITICAL') ? 'critical' : rec.type.includes('HIGH') ? 'high' : '' %>">
+                            <span class="recommendation-type"><%= rec.type %>:</span>
+                            <span class="recommendation-message"><%= rec.message %></span>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Risk Management Tips -->
+        <div class="tips-card">
+            <div class="tips-header">
+                <h5><i class="fas fa-lightbulb"></i> Risk Management Tips</h5>
+            </div>
+            <div class="tips-body">
+                <ul class="tips-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div><strong>Regular Check-ups:</strong> <span>Schedule regular appointments with your doctor to monitor your health status</span></div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div><strong>Medicine Review:</strong> <span>Discuss all current medications to identify potential interactions</span></div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div><strong>Disease Management:</strong> <span>Follow treatment plans for chronic conditions to prevent complications</span></div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div><strong>Allergy Monitoring:</strong> <span>Keep track of any new allergic reactions and report them immediately</span></div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div><strong>Lifestyle Changes:</strong> <span>Consider diet and exercise modifications to reduce overall health risk</span></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Back Buttons -->
+        <div class="back-buttons">
+            <a href="/health-intelligence/dashboard" class="btn-back-main primary">
+                <i class="fas fa-brain"></i> Health Intelligence
+            </a>
+            <a href="/patient/dashboard" class="btn-back-main">
+                <i class="fas fa-arrow-left"></i> Patient Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+        <p>© 2025 Medisync. Connecting Care, Predicting Health.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

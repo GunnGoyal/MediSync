@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Registration – Medisync</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --accent: #ff6b6b;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* Left Visual Panel */
+    .visual-panel {
+      flex: 0 0 40%;
+      background: var(--gradient-hero);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .visual-panel::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+      animation: rotate 30s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .visual-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+    }
+
+    .visual-logo {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .visual-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .visual-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 3rem;
+    }
+
+    .visual-features {
+      text-align: left;
+      max-width: 280px;
+    }
+
+    .visual-feature {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .visual-feature:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+
+    .visual-feature i {
+      font-size: 1.25rem;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .visual-feature span {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    /* Floating Shapes */
+    .floating-shape {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .shape-1 { width: 100px; height: 100px; top: 10%; left: 10%; animation-delay: 0s; }
+    .shape-2 { width: 150px; height: 150px; bottom: 15%; right: 10%; animation-delay: 2s; }
+    .shape-3 { width: 80px; height: 80px; top: 60%; left: 5%; animation-delay: 4s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.05); }
+    }
+
+    /* Right Form Panel */
+    .form-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      background: var(--light);
+      position: relative;
+      overflow-y: auto;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--dark);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+      transform: translateX(-5px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .form-header-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--gradient-hero);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      margin: 0 auto 1rem;
+      box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+    }
+
+    .form-header h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+      color: #64748b;
+      font-size: 1rem;
+    }
+
+    .form-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-label .required {
+      color: var(--accent);
+    }
+
+    .input-group-custom {
+      position: relative;
+    }
+
+    .input-group-custom i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    .form-control-custom:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+    }
+
+    .form-control-custom:focus ~ i,
+    .input-group-custom:focus-within i {
+      color: var(--primary);
+    }
+
+    .form-select-custom {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+
+    .form-select-custom:focus {
+      outline: none;
+      border-color: var(--primary);
+      background-color: white;
+      box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+    }
+
+    .form-row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+
+    .password-toggle:hover {
+      color: var(--primary);
+    }
+
+    .password-strength {
+      margin-top: 0.5rem;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      width: 0;
+    }
+
+    .password-strength-bar.weak { width: 33%; background: var(--accent); }
+    .password-strength-bar.medium { width: 66%; background: #fbbf24; }
+    .password-strength-bar.strong { width: 100%; background: var(--secondary); }
+
+    .password-hint {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+
+    .terms-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .terms-check input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .terms-check label {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .terms-check a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .terms-check a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-register {
+      width: 100%;
+      padding: 1rem;
+      background: var(--gradient-hero);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0, 102, 255, 0.3);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .divider span {
+      padding: 0 1rem;
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .form-footer p {
+      color: #64748b;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .form-footer a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    .doctor-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(0, 212, 170, 0.1);
+      color: #00a8cc;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      margin-top: 0.5rem;
+    }
+
+    .doctor-link:hover {
+      background: rgba(0, 212, 170, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      body {
+        flex-direction: column;
+      }
+
+      .visual-panel {
+        flex: none;
+        min-height: 300px;
+        padding: 2rem;
+      }
+
+      .visual-title {
+        font-size: 2rem;
+      }
+
+      .visual-features {
+        display: none;
+      }
+
+      .form-panel {
+        padding: 2rem;
+      }
+
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .form-card {
+        padding: 1.5rem;
+      }
+
+      .form-row-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-in {
+      animation: slideIn 0.8s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Left Visual Panel -->
+  <div class="visual-panel">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    
+    <div class="visual-content slide-in">
+      <div class="visual-logo">👤</div>
+      <h1 class="visual-title">Join Medisync</h1>
+      <p class="visual-subtitle">Your health journey starts here</p>
+      
+      <div class="visual-features">
+        <div class="visual-feature">
+          <i class="fas fa-calendar-check"></i>
+          <span>Book Appointments</span>
+        </div>
+        <div class="visual-feature">
+          <i class="fas fa-brain"></i>
+          <span>AI Health Insights</span>
+        </div>
+        <div class="visual-feature">
+          <i class="fas fa-file-prescription"></i>
+          <span>Digital Prescriptions</span>
+        </div>
+        <div class="visual-feature">
+          <i class="fas fa-shield-alt"></i>
+          <span>Secure & Private</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Form Panel -->
+  <div class="form-panel">
+    <a href="/auth/register" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Back
+    </a>
+
+    <div class="form-container fade-in">
+      <div class="form-header">
+        <div class="form-header-icon">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <h1>Patient Registration</h1>
+        <p>Create your account and start booking appointments</p>
+      </div>
+
+      <div class="form-card">
+        <form method="post" action="/auth/patient/register">
+          <div class="form-row-split">
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="required">*</span></label>
+              <div class="input-group-custom">
+                <input type="text" class="form-control-custom" name="name" placeholder="Your full name" required>
+                <i class="fas fa-user"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email <span class="required">*</span></label>
+              <div class="input-group-custom">
+                <input type="email" class="form-control-custom" name="email" placeholder="you@example.com" required>
+                <i class="fas fa-envelope"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password <span class="required">*</span></label>
+            <div class="input-group-custom">
+              <input type="password" class="form-control-custom" name="password" id="password" placeholder="Create a strong password" required minlength="6" onkeyup="checkPasswordStrength(this)">
+              <i class="fas fa-lock"></i>
+              <button type="button" class="password-toggle" onclick="togglePassword()">
+                <i class="fas fa-eye" id="toggleIcon"></i>
+              </button>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength-bar" id="strength-bar"></div>
+            </div>
+            <div class="password-hint">Use at least 6 characters with letters and numbers</div>
+          </div>
+
+          <div class="form-row-split">
+            <div class="form-group">
+              <label class="form-label">Age</label>
+              <div class="input-group-custom">
+                <input type="number" class="form-control-custom" name="age" placeholder="Your age" min="1" max="150">
+                <i class="fas fa-calendar"></i>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <div class="input-group-custom">
+                <select class="form-select-custom" name="gender">
+                  <option value="">Select gender</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <i class="fas fa-venus-mars"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Blood Group <span class="required">*</span></label>
+            <div class="input-group-custom">
+              <select class="form-select-custom" name="blood_group" required>
+                <option value="">Select blood group</option>
+                <option value="O+">O+ (O Positive)</option>
+                <option value="O-">O- (O Negative)</option>
+                <option value="A+">A+ (A Positive)</option>
+                <option value="A-">A- (A Negative)</option>
+                <option value="B+">B+ (B Positive)</option>
+                <option value="B-">B- (B Negative)</option>
+                <option value="AB+">AB+ (AB Positive)</option>
+                <option value="AB-">AB- (AB Negative)</option>
+              </select>
+              <i class="fas fa-tint"></i>
+            </div>
+          </div>
+
+          <div class="terms-check">
+            <input type="checkbox" id="terms" required>
+            <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+          </div>
+
+          <button type="submit" class="btn-register">
+            <i class="fas fa-user-plus"></i> Create Account
+          </button>
+        </form>
+
+        <div class="divider">
+          <span>or</span>
+        </div>
+
+        <div class="form-footer">
+          <p>Already have an account? <a href="/auth/login">Sign in here</a></p>
+          <a href="/auth/doctor/register" class="doctor-link">
+            <i class="fas fa-user-md"></i> Register as Doctor instead
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggleIcon');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+
+    function checkPasswordStrength(input) {
+      const password = input.value;
+      const strengthBar = document.getElementById('strength-bar');
+      
+      let strength = 0;
+      if (password.length >= 6) strength++;
+      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+      if (password.match(/[0-9]/)) strength++;
+      if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+      strengthBar.className = 'password-strength-bar';
+      if (password.length === 0) {
+        strengthBar.style.width = '0';
+      } else if (strength <= 1) {
+        strengthBar.classList.add('weak');
+      } else if (strength <= 2) {
+        strengthBar.classList.add('medium');
+      } else {
+        strengthBar.classList.add('strong');
+      }
+    }
+
+    // Focus effect for inputs
+    document.querySelectorAll('.form-control-custom, .form-select-custom').forEach(input => {
+      input.addEventListener('focus', function() {
+        this.closest('.input-group-custom').classList.add('focused');
+      });
+      input.addEventListener('blur', function() {
+        this.closest('.input-group-custom').classList.remove('focused');
+      });
+    });
+  </script>
+</body>
+</html>

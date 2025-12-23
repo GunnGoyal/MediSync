@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Dashboard – Medisync</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="/js/dashboardCache.js"></script>
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --secondary-dark: #00a8cc;
+      --accent: #ff6b6b;
+      --warning: #fbbf24;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+      --gradient-doctor: linear-gradient(135deg, #00d4aa 0%, #00a8cc 50%, #0066ff 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* Animated Background */
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(-45deg, #00d4aa, #00a8cc, #0066ff, #667eea);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      opacity: 0.03;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar */
+    .navbar-doctor {
+      background: var(--gradient-doctor);
+      padding: 1rem 0;
+      box-shadow: 0 4px 30px rgba(0, 212, 170, 0.3);
+    }
+
+    .navbar-brand-custom {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: white !important;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .navbar-brand-custom .brand-icon {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: white;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+    }
+
+    .nav-user-avatar {
+      width: 35px;
+      height: 35px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .nav-user-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .btn-nav:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .btn-nav.messages {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-logout {
+      background: rgba(255, 107, 107, 0.2);
+      border-color: rgba(255, 107, 107, 0.4);
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 107, 107, 0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .welcome-content {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .welcome-avatar {
+      width: 80px;
+      height: 80px;
+      background: var(--gradient-doctor);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 212, 170, 0.3);
+    }
+
+    .welcome-text h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 0 0 0.25rem 0;
+    }
+
+    .welcome-text p {
+      color: #64748b;
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .quick-stats {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .quick-stat {
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 168, 204, 0.1) 100%);
+      padding: 1rem 1.5rem;
+      border-radius: 16px;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .quick-stat-number {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--secondary-dark);
+    }
+
+    .quick-stat-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-title-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-doctor);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: white;
+      box-shadow: 0 8px 25px rgba(0, 212, 170, 0.25);
+    }
+
+    .section-title h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .section-title span {
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: white;
+      padding: 0.35rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-tab {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-tab.active {
+      background: var(--gradient-doctor);
+      color: white;
+    }
+
+    .filter-tab:hover:not(.active) {
+      background: #f1f5f9;
+    }
+
+    /* Appointment Cards */
+    .appointments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .appointment-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .appointment-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .appointment-header {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .patient-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .patient-avatar {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-hero);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .patient-name {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .patient-id {
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    .status-badge {
+      padding: 0.4rem 0.9rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.pending {
+      background: rgba(251, 191, 36, 0.15);
+      color: #d97706;
+    }
+
+    .status-badge.accepted {
+      background: rgba(0, 212, 170, 0.15);
+      color: var(--secondary-dark);
+    }
+
+    .status-badge.completed {
+      background: rgba(0, 102, 255, 0.15);
+      color: var(--primary);
+    }
+
+    .status-badge.rejected {
+      background: rgba(255, 107, 107, 0.15);
+      color: var(--accent);
+    }
+
+    .appointment-body {
+      padding: 1.25rem 1.5rem;
+    }
+
+    .appointment-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .appointment-detail i {
+      width: 32px;
+      height: 32px;
+      background: #f8fafc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+
+    .appointment-detail span {
+      color: #475569;
+      font-size: 0.95rem;
+    }
+
+    .appointment-detail strong {
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .appointment-footer {
+      padding: 1rem 1.5rem;
+      background: #f8fafc;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .status-select {
+      flex: 1;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .status-select select {
+      flex: 1;
+      padding: 0.6rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .status-select select:focus {
+      outline: none;
+      border-color: var(--secondary);
+    }
+
+    .btn-update {
+      background: var(--gradient-doctor);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.25rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-update:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 212, 170, 0.3);
+    }
+
+    .btn-consult {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary);
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-consult:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+      background: white;
+      border-radius: 24px;
+      padding: 4rem 2rem;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-state-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 168, 204, 0.1) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      margin: 0 auto 1.5rem;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: #64748b;
+      font-size: 1rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .action-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .action-icon.green {
+      background: rgba(0, 212, 170, 0.1);
+      color: var(--secondary);
+    }
+
+    .action-icon.blue {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .action-icon.purple {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .action-icon.orange {
+      background: rgba(251, 191, 36, 0.1);
+      color: #d97706;
+    }
+
+    .action-content h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0 0 0.15rem 0;
+    }
+
+    .action-content p {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .welcome-section {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .quick-stats {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .nav-actions {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 1rem;
+      }
+
+      .appointments-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .filter-tabs {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .quick-stats {
+        flex-wrap: wrap;
+      }
+
+      .quick-stat {
+        flex: 1;
+        min-width: 80px;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-up {
+      animation: slideUp 0.5s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-doctor">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand-custom" href="/doctor/dashboard">
+        <div class="brand-icon">👨‍⚕️</div>
+        <span>Medisync</span>
+      </a>
+      <div class="nav-actions">
+        <a href="/advanced/chat-dashboard" class="btn-nav messages">
+          <i class="fas fa-comments"></i> Messages
+        </a>
+        <button class="btn-nav" id="refreshBtn">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+        <div class="nav-user">
+          <div class="nav-user-avatar">
+            <i class="fas fa-user-md"></i>
+          </div>
+          <span class="nav-user-name">Dr. <%= (user && user.name) || 'Doctor' %></span>
+        </div>
+        <form method="post" action="/auth/logout" style="display:inline;">
+          <button class="btn-nav btn-logout" type="submit">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Welcome Section -->
+    <div class="welcome-section fade-in">
+      <div class="welcome-content">
+        <div class="welcome-avatar">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <div class="welcome-text">
+          <h1>Welcome back, Dr. <%= (user && user.name) || 'Doctor' %>!</h1>
+          <p>Here's an overview of your appointments and patient consultations</p>
+        </div>
+      </div>
+      <div class="quick-stats">
+        <div class="quick-stat">
+          <div class="quick-stat-number"><%= appointments ? appointments.length : 0 %></div>
+          <div class="quick-stat-label">Total</div>
+        </div>
+        <div class="quick-stat">
+          <div class="quick-stat-number"><%= appointments ? appointments.filter(a => a.status === 'pending').length : 0 %></div>
+          <div class="quick-stat-label">Pending</div>
+        </div>
+        <div class="quick-stat">
+          <div class="quick-stat-number"><%= appointments ? appointments.filter(a => a.status === 'accepted').length : 0 %></div>
+          <div class="quick-stat-label">Accepted</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-header">
+      <div class="section-title">
+        <div class="section-title-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div>
+          <h2>Your Appointments</h2>
+          <span>Manage and track patient consultations</span>
+        </div>
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterAppointments('all')">All</button>
+        <button class="filter-tab" onclick="filterAppointments('pending')">Pending</button>
+        <button class="filter-tab" onclick="filterAppointments('accepted')">Accepted</button>
+        <button class="filter-tab" onclick="filterAppointments('completed')">Completed</button>
+      </div>
+    </div>
+
+    <!-- Appointments Grid -->
+    <% if (appointments && appointments.length > 0) { %>
+      <div class="appointments-grid">
+        <% appointments.forEach((a, index) => { %>
+          <div class="appointment-card slide-up" data-status="<%= a.status %>" style="animation-delay: <%= index * 0.1 %>s">
+            <div class="appointment-header">
+              <div class="patient-info">
+                <div class="patient-avatar">
+                  <%= a.patient_name ? a.patient_name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() : 'P' %>
+                </div>
+                <div>
+                  <h4 class="patient-name"><%= a.patient_name %></h4>
+                  <span class="patient-id">ID: #<%= a.appointment_id %></span>
+                </div>
+              </div>
+              <span class="status-badge <%= a.status %>"><%= a.status %></span>
+            </div>
+            <div class="appointment-body">
+              <div class="appointment-detail">
+                <i class="fas fa-calendar"></i>
+                <span><strong>Date:</strong> <%= new Date(a.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+              </div>
+              <div class="appointment-detail">
+                <i class="fas fa-clock"></i>
+                <span><strong>Time:</strong> <%= new Date(a.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) %></span>
+              </div>
+              <div class="appointment-detail">
+                <i class="fas fa-stethoscope"></i>
+                <span><strong>Reason:</strong> <%= a.reason || 'General Consultation' %></span>
+              </div>
+            </div>
+            <div class="appointment-footer">
+              <form method="post" action="/doctor/appointments/<%= a.appointment_id %>/status" class="status-select">
+                <select name="status">
+                  <option value="<%= a.status %>" selected><%= a.status.charAt(0).toUpperCase() + a.status.slice(1) %></option>
+                  <% if (a.status !== 'accepted') { %><option value="accepted">Accept</option><% } %>
+                  <% if (a.status !== 'rejected') { %><option value="rejected">Reject</option><% } %>
+                  <% if (a.status !== 'completed') { %><option value="completed">Complete</option><% } %>
+                </select>
+                <button class="btn-update" type="submit">
+                  <i class="fas fa-check"></i> Update
+                </button>
+              </form>
+              <a href="/doctor/consult/<%= a.appointment_id %>" class="btn-consult">
+                <i class="fas fa-video"></i> Consult
+              </a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty-state fade-in">
+        <div class="empty-state-icon">📅</div>
+        <h3>No Appointments Yet</h3>
+        <p>You don't have any scheduled appointments at the moment. New patient bookings will appear here.</p>
+      </div>
+    <% } %>
+
+    <!-- Quick Actions -->
+ 
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Initialize dashboard cache on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize cache UI with controls
+      if (typeof DashboardCache !== 'undefined') {
+        DashboardCache.initUI();
+        console.log('[Doctor Dashboard] Cache initialized');
+        console.log('[Doctor Dashboard] Cache Stats:', DashboardCache.getStats());
+        
+        DashboardCache.set('doctor_dashboard_appointments', {
+          timestamp: new Date().toISOString(),
+          page: 'doctor_dashboard'
+        }, DashboardCache.CONFIG.DOCTOR_TTL);
+      }
+
+      // Refresh button functionality
+      document.getElementById('refreshBtn').addEventListener('click', function() {
+        if (typeof DashboardCache !== 'undefined') {
+          DashboardCache.clearAll();
+        }
+        location.reload();
+      });
+    });
+
+    // Filter appointments by status
+    function filterAppointments(status) {
+      const tabs = document.querySelectorAll('.filter-tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const cards = document.querySelectorAll('.appointment-card');
+      cards.forEach(card => {
+        if (status === 'all' || card.dataset.status === status) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

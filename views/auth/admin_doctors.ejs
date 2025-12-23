@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Doctors – Medisync Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --accent: #ff6b6b;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+      --gradient-admin: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* Animated Background */
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #667eea);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      opacity: 0.03;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar */
+    .navbar-admin {
+      background: var(--gradient-admin);
+      padding: 1rem 0;
+      box-shadow: 0 4px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .navbar-brand-custom {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: white !important;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .navbar-brand-custom .brand-icon {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .nav-stats {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+    }
+
+    .nav-stat i {
+      opacity: 0.8;
+    }
+
+    .btn-logout {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Page Header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .page-title-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--gradient-admin);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .page-title h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .page-title p {
+      color: #64748b;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .stat-badge {
+      background: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .stat-badge-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .stat-badge-icon.pending {
+      background: rgba(255, 107, 107, 0.1);
+      color: var(--accent);
+    }
+
+    .stat-badge-icon.verified {
+      background: rgba(0, 212, 170, 0.1);
+      color: var(--secondary);
+    }
+
+    .stat-badge-content span {
+      display: block;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    .stat-badge-content strong {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    /* Table Card */
+    .table-card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .table-header {
+      padding: 1.5rem 2rem;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(240, 147, 251, 0.05) 100%);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .table-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .table-header h2 i {
+      color: #667eea;
+    }
+
+    .search-box {
+      position: relative;
+      width: 280px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.6rem 1rem 0.6rem 2.5rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+
+    /* Custom Table */
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .custom-table thead {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .custom-table thead th {
+      padding: 1rem 1.5rem;
+      text-align: left;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .custom-table thead th:first-child {
+      padding-left: 2rem;
+    }
+
+    .custom-table thead th:last-child {
+      text-align: center;
+    }
+
+    .custom-table tbody tr {
+      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.3s ease;
+    }
+
+    .custom-table tbody tr:hover {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(240, 147, 251, 0.03) 100%);
+    }
+
+    .custom-table tbody td {
+      padding: 1.25rem 1.5rem;
+      vertical-align: middle;
+    }
+
+    .custom-table tbody td:first-child {
+      padding-left: 2rem;
+    }
+
+    .custom-table tbody td:last-child {
+      text-align: center;
+    }
+
+    .doctor-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .doctor-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      background: var(--gradient-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .doctor-name {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 1rem;
+    }
+
+    .doctor-id {
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    .spec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      background: rgba(0, 212, 170, 0.1);
+      color: #00a8cc;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .spec-badge i {
+      font-size: 0.75rem;
+    }
+
+    .email-cell {
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .email-cell i {
+      color: #94a3b8;
+    }
+
+    .btn-verify {
+      background: var(--gradient-2);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.25rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-verify:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 212, 170, 0.3);
+    }
+
+    .btn-reject {
+      background: rgba(255, 107, 107, 0.1);
+      color: var(--accent);
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-left: 0.5rem;
+    }
+
+    .btn-reject:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .empty-state-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 168, 204, 0.1) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      margin: 0 auto 1.5rem;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: #64748b;
+      font-size: 1rem;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .action-card {
+      flex: 1;
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .action-icon.purple {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .action-icon.blue {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .action-icon.green {
+      background: rgba(0, 212, 170, 0.1);
+      color: var(--secondary);
+    }
+
+    .action-content h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0 0 0.25rem 0;
+    }
+
+    .action-content p {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .nav-stats {
+        display: none;
+      }
+
+      .header-stats {
+        flex-wrap: wrap;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+
+      .table-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .quick-actions {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 1rem;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .custom-table thead {
+        display: none;
+      }
+
+      .custom-table tbody tr {
+        display: block;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+      }
+
+      .custom-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      .custom-table tbody td:first-child {
+        padding-left: 0;
+      }
+
+      .custom-table tbody td:last-child {
+        border-bottom: none;
+        justify-content: center;
+        padding-top: 1rem;
+      }
+
+      .custom-table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-admin">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand-custom" href="/admin/dashboard">
+        <div class="brand-icon">🛡️</div>
+        <span>Medisync Admin</span>
+      </a>
+      <div class="nav-stats d-none d-lg-flex">
+        <div class="nav-stat">
+          <i class="fas fa-user-md"></i>
+          <span>Doctor Verification</span>
+        </div>
+      </div>
+      <form method="post" action="/admin/logout" style="display:inline;">
+        <button class="btn-logout" type="submit">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </form>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content fade-in">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-title">
+        <div class="page-title-icon">
+          <i class="fas fa-user-check"></i>
+        </div>
+        <div>
+          <h1>Doctor Verification</h1>
+          <p>Review and approve pending doctor registrations</p>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-badge">
+          <div class="stat-badge-icon pending">
+            <i class="fas fa-hourglass-half"></i>
+          </div>
+          <div class="stat-badge-content">
+            <span>Pending</span>
+            <strong><%= doctors ? doctors.length : 0 %></strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+      <div class="table-header">
+        <h2><i class="fas fa-clipboard-list"></i> Pending Verification Requests</h2>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search doctors..." onkeyup="filterTable()">
+        </div>
+      </div>
+      
+      <% if (doctors && doctors.length > 0) { %>
+        <table class="custom-table" id="doctorTable">
+          <thead>
+            <tr>
+              <th>Doctor</th>
+              <th>Specialization</th>
+              <th>Email</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% doctors.forEach((d, index) => { %>
+              <tr>
+                <td data-label="Doctor">
+                  <div class="doctor-info">
+                    <div class="doctor-avatar">
+                      <%= d.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() %>
+                    </div>
+                    <div>
+                      <div class="doctor-name"><%= d.name %></div>
+                      <div class="doctor-id">ID: #<%= d.doctor_id %></div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="Specialization">
+                  <span class="spec-badge">
+                    <i class="fas fa-stethoscope"></i>
+                    <%= d.specialization %>
+                  </span>
+                </td>
+                <td data-label="Email">
+                  <span class="email-cell">
+                    <i class="fas fa-envelope"></i>
+                    <%= d.email %>
+                  </span>
+                </td>
+                <td data-label="Action">
+                  <form method="post" action="/admin/verify/<%= d.doctor_id %>" style="display:inline;">
+                    <button class="btn-verify" type="submit">
+                      <i class="fas fa-check"></i> Verify
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <div class="empty-state">
+          <div class="empty-state-icon">✅</div>
+          <h3>All Caught Up!</h3>
+          <p>There are no pending doctor verification requests at this time. New registrations will appear here.</p>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="/admin/dashboard" class="action-card">
+        <div class="action-icon purple">
+          <i class="fas fa-tachometer-alt"></i>
+        </div>
+        <div class="action-content">
+          <h4>Dashboard</h4>
+          <p>Back to admin dashboard</p>
+        </div>
+      </a>
+      <a href="/admin/doctors" class="action-card">
+        <div class="action-icon green">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <div class="action-content">
+          <h4>All Doctors</h4>
+          <p>View verified doctors</p>
+        </div>
+      </a>
+      <a href="/admin/patients" class="action-card">
+        <div class="action-icon blue">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="action-content">
+          <h4>Patients</h4>
+          <p>Manage patient accounts</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function filterTable() {
+      const input = document.getElementById('searchInput');
+      const filter = input.value.toLowerCase();
+      const table = document.getElementById('doctorTable');
+      if (!table) return;
+      
+      const rows = table.getElementsByTagName('tr');
+      
+      for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let found = false;
+        
+        for (let j = 0; j < cells.length - 1; j++) {
+          const text = cells[j].textContent || cells[j].innerText;
+          if (text.toLowerCase().indexOf(filter) > -1) {
+            found = true;
+            break;
+          }
+        }
+        
+        rows[i].style.display = found ? '' : 'none';
+      }
+    }
+  </script>
+</body>
+</html>
