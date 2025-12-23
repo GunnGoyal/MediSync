@@ -1,0 +1,6 @@
+body { font-family: Arial, sans-serif; margin: 2rem; }
+header { display:flex; gap:1rem; align-items:center; }
+nav a { margin-right: 1rem; }
+form { display:flex; flex-direction:column; gap:0.5rem; max-width: 400px; }
+ul { list-style: none; padding: 0; }
+li { margin: 0.3rem 0; }

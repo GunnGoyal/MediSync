@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allergy Detection - Medisync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --secondary: #00d4aa;
+            --secondary-dark: #00a8cc;
+            --accent: #ff6b6b;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #1a1a2e;
+            --light: #f8fafc;
+            --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+            --gradient-patient: linear-gradient(135deg, #0066ff 0%, #0052cc 50%, #667eea 100%);
+            --gradient-allergy: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 50%, #d63384 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-back {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--gradient-allergy);
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 1rem;
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+            color: var(--warning);
+        }
+
+        .stat-icon.danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            color: var(--danger);
+        }
+
+        .stat-card h5 {
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-allergy);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Alert Section */
+        .alert-section {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-section-header {
+            padding: 1.25rem 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-section-header.danger {
+            background: var(--gradient-danger);
+        }
+
+        .alert-section-header.warning {
+            background: var(--gradient-warning);
+        }
+
+        .alert-section-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .alert-section-body {
+            padding: 1.5rem;
+        }
+
+        .alert-description {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Alert Card */
+        .allergy-card {
+            background: #fef2f2;
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--danger);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .allergy-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.15);
+        }
+
+        .allergy-card.moderate {
+            background: #fffbeb;
+            border-left-color: var(--warning);
+        }
+
+        .allergy-card.moderate:hover {
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.15);
+        }
+
+        .allergy-card.mild {
+            background: #f0fdf4;
+            border-left-color: var(--success);
+        }
+
+        .allergy-card.mild:hover {
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.15);
+        }
+
+        .allergy-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .allergy-icon.severe {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .allergy-icon.moderate {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--warning);
+        }
+
+        .allergy-icon.mild {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .allergy-content {
+            flex: 1;
+        }
+
+        .allergy-content h6 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .allergy-meta {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .allergy-meta i {
+            width: 16px;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .severity-badge.severe {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .severity-badge.moderate {
+            background: rgba(251, 191, 36, 0.1);
+            color: #d97706;
+        }
+
+        .severity-badge.mild {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        /* Side Effect Category */
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .category-header.severe {
+            color: var(--danger);
+        }
+
+        .category-header.moderate {
+            color: #d97706;
+        }
+
+        .category-header.mild {
+            color: var(--success);
+        }
+
+        /* Important Alert Box */
+        .important-alert {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .important-alert strong {
+            color: var(--danger);
+        }
+
+        .important-alert p {
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Success State */
+        .success-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient-success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+            color: white;
+            animation: pulse-success 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-success {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+        }
+
+        .success-state h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 0.5rem;
+        }
+
+        .success-state p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* Info Card */
+        .info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .info-card h6 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-card h6 i {
+            color: var(--primary);
+        }
+
+        .info-card p {
+            color: #64748b;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Back Buttons */
+        .back-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn-back-main {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            color: var(--dark);
+            border: 2px solid #e2e8f0;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back-main:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-back-main.primary {
+            background: var(--gradient-hero);
+            color: white;
+            border: none;
+        }
+
+        .btn-back-main.primary:hover {
+            box-shadow: 0 10px 25px rgba(0, 102, 255, 0.3);
+            color: white;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .allergy-card {
+                flex-direction: column;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card, .alert-section, .success-state, .info-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/">🏥 Medisync</a>
+            <a href="/health-intelligence/dashboard" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Health Intelligence
+            </a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                <i class="fas fa-flask-vial"></i>
+                Allergy & Side Effect Detection
+            </h1>
+            <p>Monitor medicines that may cause adverse reactions</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h5>Flagged Medicines</h5>
+                <div class="stat-number"><%= report.allergyRisks.prescriptionRisks.length + report.allergyRisks.knownSideEffects.length %></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon danger">
+                    <i class="fas fa-ban"></i>
+                </div>
+                <h5>Allergy Reports</h5>
+                <div class="stat-number"><%= report.allergyRisks.prescriptionRisks.length %></div>
+            </div>
+        </div>
+
+        <!-- Reported Allergies -->
+        <% if (report.allergyRisks.prescriptionRisks && report.allergyRisks.prescriptionRisks.length > 0) { %>
+            <div class="alert-section">
+                <div class="alert-section-header danger">
+                    <i class="fas fa-flag"></i>
+                    <h5>Reported Allergies / Reactions</h5>
+                </div>
+                <div class="alert-section-body">
+                    <p class="alert-description">These medicines have been flagged as causing allergic reactions or severe side effects:</p>
+                    <% report.allergyRisks.prescriptionRisks.forEach(risk => { %>
+                        <div class="allergy-card">
+                            <div class="allergy-icon severe">
+                                <i class="fas fa-ban"></i>
+                            </div>
+                            <div class="allergy-content">
+                                <h6><%= risk.medicine_name %></h6>
+                                <p class="allergy-meta">
+                                    <i class="fas fa-calendar-alt"></i> Last prescribed: <%= new Date(risk.prescribed_date).toLocaleDateString() %>
+                                </p>
+                                <span class="severity-badge severe">Allergy Reported</span>
+                            </div>
+                        </div>
+                    <% }); %>
+                    <div class="important-alert">
+                        <strong><i class="fas fa-exclamation-circle"></i> Important:</strong>
+                        <p>Please inform your doctor about these allergies before accepting new prescriptions.</p>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Known Side Effects -->
+        <% if (report.allergyRisks.knownSideEffects && report.allergyRisks.knownSideEffects.length > 0) { %>
+            <div class="alert-section">
+                <div class="alert-section-header warning">
+                    <i class="fas fa-flask"></i>
+                    <h5>Known Side Effects</h5>
+                </div>
+                <div class="alert-section-body">
+                    <p class="alert-description">These medicines have known side effects based on medical databases:</p>
+                    
+                    <!-- Severe Side Effects -->
+                    <% const severeEffects = report.allergyRisks.knownSideEffects.filter(e => e.severity === 'severe'); %>
+                    <% if (severeEffects.length > 0) { %>
+                        <div class="category-header severe">
+                            <i class="fas fa-triangle-exclamation"></i> Severe Side Effects
+                        </div>
+                        <% severeEffects.forEach(effect => { %>
+                            <div class="allergy-card">
+                                <div class="allergy-icon severe">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="allergy-content">
+                                    <h6><%= effect.medicine_name %></h6>
+                                    <p class="allergy-meta">
+                                        <strong>Side Effect:</strong> <%= effect.side_effect %>
+                                    </p>
+                                    <span class="severity-badge severe">Severe</span>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                    
+                    <!-- Moderate Side Effects -->
+                    <% const moderateEffects = report.allergyRisks.knownSideEffects.filter(e => e.severity === 'moderate'); %>
+                    <% if (moderateEffects.length > 0) { %>
+                        <div class="category-header moderate">
+                            <i class="fas fa-info-circle"></i> Moderate Side Effects
+                        </div>
+                        <% moderateEffects.forEach(effect => { %>
+                            <div class="allergy-card moderate">
+                                <div class="allergy-icon moderate">
+                                    <i class="fas fa-exclamation"></i>
+                                </div>
+                                <div class="allergy-content">
+                                    <h6><%= effect.medicine_name %></h6>
+                                    <p class="allergy-meta">
+                                        <strong>Side Effect:</strong> <%= effect.side_effect %>
+                                    </p>
+                                    <span class="severity-badge moderate">Moderate</span>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                    
+                    <!-- Mild Side Effects -->
+                    <% const mildEffects = report.allergyRisks.knownSideEffects.filter(e => e.severity === 'mild'); %>
+                    <% if (mildEffects.length > 0) { %>
+                        <div class="category-header mild">
+                            <i class="fas fa-info"></i> Mild Side Effects
+                        </div>
+                        <% mildEffects.forEach(effect => { %>
+                            <div class="allergy-card mild">
+                                <div class="allergy-icon mild">
+                                    <i class="fas fa-circle-info"></i>
+                                </div>
+                                <div class="allergy-content">
+                                    <h6><%= effect.medicine_name %></h6>
+                                    <p class="allergy-meta">
+                                        <strong>Side Effect:</strong> <%= effect.side_effect %>
+                                    </p>
+                                    <span class="severity-badge mild">Mild</span>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- No Alerts - Success State -->
+        <% if ((!report.allergyRisks.prescriptionRisks || report.allergyRisks.prescriptionRisks.length === 0) && 
+                (!report.allergyRisks.knownSideEffects || report.allergyRisks.knownSideEffects.length === 0)) { %>
+            <div class="success-state">
+                <div class="success-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Great News!</h3>
+                <p>No allergy or side effect warnings detected in your medical history.</p>
+            </div>
+        <% } %>
+
+        <!-- Doctor Notification Info -->
+        <% if ((report.allergyRisks.prescriptionRisks && report.allergyRisks.prescriptionRisks.length > 0) || 
+                (report.allergyRisks.knownSideEffects && report.allergyRisks.knownSideEffects.length > 0)) { %>
+            <div class="info-card">
+                <h6><i class="fas fa-bell"></i> Doctor Notification</h6>
+                <p>Your doctor will be automatically alerted about these warnings before prescribing new medications. Always discuss any concerns with your healthcare provider.</p>
+            </div>
+        <% } %>
+
+        <!-- Back Buttons -->
+        <div class="back-buttons">
+            <a href="/health-intelligence/dashboard" class="btn-back-main primary">
+                <i class="fas fa-brain"></i> Health Intelligence
+            </a>
+            <a href="/patient/dashboard" class="btn-back-main">
+                <i class="fas fa-arrow-left"></i> Patient Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+        <p>© 2025 Medisync. Connecting Care, Predicting Health.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

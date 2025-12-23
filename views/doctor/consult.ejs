@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultation – Medisync</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --secondary-dark: #00a8cc;
+      --accent: #ff6b6b;
+      --warning: #fbbf24;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+      --gradient-doctor: linear-gradient(135deg, #00d4aa 0%, #00a8cc 50%, #0066ff 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* Animated Background */
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(-45deg, #00d4aa, #00a8cc, #0066ff, #667eea);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      opacity: 0.03;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar */
+    .navbar-doctor {
+      background: var(--gradient-doctor);
+      padding: 1rem 0;
+      box-shadow: 0 4px 30px rgba(0, 212, 170, 0.3);
+    }
+
+    .navbar-brand-custom {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: white !important;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .navbar-brand-custom .brand-icon {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .btn-nav:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Appointment Header Card */
+    .appointment-header-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .appointment-info {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .appointment-avatar {
+      width: 80px;
+      height: 80px;
+      background: var(--gradient-hero);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+    }
+
+    .appointment-details h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 0 0 0.5rem 0;
+    }
+
+    .appointment-meta {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .meta-item i {
+      color: var(--secondary);
+    }
+
+    .meta-item strong {
+      color: var(--dark);
+    }
+
+    .appointment-id-badge {
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 168, 204, 0.1) 100%);
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      color: var(--secondary-dark);
+      font-size: 1rem;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .section-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .section-icon.green {
+      background: rgba(0, 212, 170, 0.1);
+      color: var(--secondary);
+    }
+
+    .section-icon.blue {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .section-icon.purple {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .section-icon.red {
+      background: rgba(255, 107, 107, 0.1);
+      color: var(--accent);
+    }
+
+    .section-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .section-body {
+      padding: 1.5rem;
+    }
+
+    /* Prescription Items */
+    .prescription-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .prescription-item {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+    }
+
+    .prescription-item:hover {
+      background: #f1f5f9;
+      transform: translateX(5px);
+    }
+
+    .prescription-content {
+      flex: 1;
+    }
+
+    .prescription-name {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .prescription-name i {
+      color: var(--secondary);
+    }
+
+    .prescription-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .prescription-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .prescription-detail i {
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    .prescription-instructions {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-style: italic;
+    }
+
+    .btn-delete {
+      background: rgba(255, 107, 107, 0.1);
+      color: var(--accent);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn-delete:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Download Button */
+    .btn-download {
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 212, 170, 0.1) 100%);
+      color: var(--primary);
+      border: 2px dashed rgba(0, 102, 255, 0.3);
+      padding: 1rem;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-download:hover {
+      background: var(--gradient-doctor);
+      color: white;
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 212, 170, 0.3);
+    }
+
+    /* Form Styling */
+    .form-section {
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.03) 0%, rgba(0, 168, 204, 0.03) 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid rgba(0, 212, 170, 0.1);
+    }
+
+    .form-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-title i {
+      color: var(--secondary);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 4px rgba(0, 212, 170, 0.1);
+    }
+
+    .form-control::placeholder {
+      color: #94a3b8;
+    }
+
+    .btn-submit {
+      background: var(--gradient-doctor);
+      color: white;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 212, 170, 0.3);
+    }
+
+    .btn-secondary-custom {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .btn-secondary-custom:hover {
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    /* History Items */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .history-item {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-left: 4px solid var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .history-item:hover {
+      background: #f1f5f9;
+      transform: translateX(5px);
+    }
+
+    .history-name {
+      font-weight: 600;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .history-name i {
+      color: var(--primary);
+    }
+
+    .history-date {
+      font-size: 0.85rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Alert Cards */
+    .alert-card {
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .alert-card.danger {
+      background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 107, 107, 0.05) 100%);
+      border: 1px solid rgba(255, 107, 107, 0.2);
+    }
+
+    .alert-card.success {
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(0, 212, 170, 0.05) 100%);
+      border: 1px solid rgba(0, 212, 170, 0.2);
+    }
+
+    .alert-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .alert-icon.danger {
+      background: rgba(255, 107, 107, 0.15);
+      color: var(--accent);
+    }
+
+    .alert-icon.success {
+      background: rgba(0, 212, 170, 0.15);
+      color: var(--secondary);
+    }
+
+    .alert-content h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 0.35rem 0;
+    }
+
+    .alert-content h4.danger {
+      color: var(--accent);
+    }
+
+    .alert-content h4.success {
+      color: var(--secondary-dark);
+    }
+
+    .alert-content p {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .alert-content small {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .alert-badge {
+      background: rgba(255, 107, 107, 0.15);
+      color: var(--accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .appointment-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .appointment-info {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 1rem;
+      }
+
+      .prescription-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .btn-delete {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .appointment-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-up {
+      animation: slideUp 0.5s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-doctor">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand-custom" href="/doctor/dashboard">
+        <div class="brand-icon">👨‍⚕️</div>
+        <span>Medisync</span>
+      </a>
+      <a href="/doctor/dashboard" class="btn-nav">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Appointment Header -->
+    <div class="appointment-header-card fade-in">
+      <div class="appointment-info">
+        <div class="appointment-avatar">
+          <%= (appt && appt.patient_name) ? appt.patient_name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase() : 'P' %>
+        </div>
+        <div class="appointment-details">
+          <h1>Patient Consultation</h1>
+          <div class="appointment-meta">
+            <div class="meta-item">
+              <i class="fas fa-user"></i>
+              <span>Patient: <strong><%= appt && appt.patient_name %></strong></span>
+            </div>
+            <div class="meta-item">
+              <i class="fas fa-user-md"></i>
+              <span>Doctor: <strong><%= appt && appt.doctor_name %></strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="appointment-id-badge">
+        <i class="fas fa-hashtag"></i> Appointment #<%= appointment_id %>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Left Column - Prescriptions -->
+      <div class="col-lg-6">
+        <div class="section-card slide-up" style="animation-delay: 0.1s">
+          <div class="section-header">
+            <div class="section-icon green">
+              <i class="fas fa-pills"></i>
+            </div>
+            <h3>Prescriptions</h3>
+          </div>
+          <div class="section-body">
+            <% if (prescriptions && prescriptions.length > 0) { %>
+              <div class="prescription-list">
+                <% prescriptions.forEach(p => { %>
+                  <div class="prescription-item">
+                    <div class="prescription-content">
+                      <div class="prescription-name">
+                        <i class="fas fa-capsules"></i>
+                        <%= p.medicine_name %>
+                      </div>
+                      <div class="prescription-details">
+                        <span class="prescription-detail">
+                          <i class="fas fa-weight"></i>
+                          <%= p.dosage %>
+                        </span>
+                        <span class="prescription-detail">
+                          <i class="fas fa-clock"></i>
+                          <%= p.duration %>
+                        </span>
+                      </div>
+                      <% if (p.instructions) { %>
+                        <div class="prescription-instructions">
+                          <i class="fas fa-info-circle"></i> <%= p.instructions %>
+                        </div>
+                      <% } %>
+                    </div>
+                    <form method="post" action="/doctor/prescription/<%= p.prescription_id %>/delete" onsubmit="return confirm('Are you sure you want to delete this prescription?');">
+                      <button type="submit" class="btn-delete">
+                        <i class="fas fa-trash"></i> Delete
+                      </button>
+                    </form>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-state-icon">💊</div>
+                <p>No prescriptions added yet</p>
+              </div>
+            <% } %>
+
+            <a href="/doctor/prescription/<%= appointment_id %>/pdf" class="btn-download">
+              <i class="fas fa-file-pdf"></i> Download Prescription PDF
+            </a>
+
+            <div class="form-section">
+              <div class="form-title">
+                <i class="fas fa-plus-circle"></i>
+                Add New Prescription
+              </div>
+              <form method="post" action="/doctor/prescribe">
+                <input type="hidden" name="appointment_id" value="<%= appointment_id %>">
+                <div class="form-group">
+                  <label class="form-label">Medicine Name</label>
+                  <input class="form-control" name="medicine_name" placeholder="e.g., Paracetamol 500mg" required>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="form-label">Dosage</label>
+                      <input class="form-control" name="dosage" placeholder="e.g., 1 tablet" required>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="form-label">Duration</label>
+                      <input class="form-control" name="duration" placeholder="e.g., 5 days" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Instructions</label>
+                  <input class="form-control" name="instructions" placeholder="e.g., Take after meals with water">
+                </div>
+                <button class="btn-submit" type="submit">
+                  <i class="fas fa-plus"></i> Add Prescription
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - History & Alerts -->
+      <div class="col-lg-6">
+        <!-- Patient History -->
+        <div class="section-card slide-up" style="animation-delay: 0.2s">
+          <div class="section-header">
+            <div class="section-icon blue">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h3>Patient History</h3>
+          </div>
+          <div class="section-body">
+            <% if (history && history.length > 0) { %>
+              <div class="history-list">
+                <% history.forEach(h => { %>
+                  <div class="history-item">
+                    <span class="history-name">
+                      <i class="fas fa-notes-medical"></i>
+                      <%= h.disease_name %>
+                    </span>
+                    <span class="history-date">
+                      <i class="fas fa-calendar-alt"></i>
+                      <%= new Date(h.diagnosed_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+                    </span>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <p>No disease history recorded</p>
+              </div>
+            <% } %>
+
+            <div class="form-section mt-3">
+              <div class="form-title">
+                <i class="fas fa-plus-circle"></i>
+                Add Diagnosis
+              </div>
+              <form method="post" action="/doctor/diagnose">
+                <input type="hidden" name="appointment_id" value="<%= appointment_id %>">
+                <div class="form-group">
+                  <input class="form-control" name="disease_name" placeholder="Disease or Condition name" required>
+                </div>
+                <button class="btn-submit btn-secondary-custom" type="submit">
+                  <i class="fas fa-stethoscope"></i> Record Diagnosis
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Smart Alerts -->
+        <div class="section-card slide-up" style="animation-delay: 0.3s">
+          <div class="section-header">
+            <div class="section-icon red">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3>Smart Alerts</h3>
+          </div>
+          <div class="section-body">
+            <% if (alerts && alerts.length > 0) { %>
+              <% alerts.forEach(a => { %>
+                <div class="alert-card danger">
+                  <div class="alert-icon danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                  </div>
+                  <div class="alert-content">
+                    <h4 class="danger"><%= a.medicine_name %></h4>
+                    <p>Used <strong><%= a.count %> times</strong> in the last 2 months</p>
+                    <small>Possible chronic condition or medicine dependency. Review dosage and frequency.</small>
+                    <div class="alert-badge">
+                      <i class="fas fa-redo"></i> Repetition Alert
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <div class="alert-card success">
+                <div class="alert-icon success">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="alert-content">
+                  <h4 class="success">All Clear!</h4>
+                  <p>No medicine repetition alerts detected for this patient.</p>
+                  <small>The patient's prescription history shows no concerning patterns.</small>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

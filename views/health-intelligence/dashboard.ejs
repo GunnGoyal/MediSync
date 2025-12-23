@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Intelligence Dashboard - Medisync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/dashboardCache.js"></script>
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --secondary: #00d4aa;
+            --secondary-dark: #00a8cc;
+            --accent: #ff6b6b;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #1a1a2e;
+            --light: #f8fafc;
+            --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+            --gradient-patient: linear-gradient(135deg, #0066ff 0%, #0052cc 50%, #667eea 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            margin-bottom: 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-back {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--primary);
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--gradient-patient);
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Alert Recommendations */
+        .alert-recommendations {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--warning);
+            margin-bottom: 2rem;
+        }
+
+        .alert-recommendations h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-recommendations h4 i {
+            color: var(--warning);
+        }
+
+        .recommendation-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+
+        .recommendation-type {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Health Cards */
+        .health-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .health-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .health-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-hero);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .health-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.15);
+        }
+
+        .health-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .health-card.risk-critical::before {
+            background: var(--gradient-danger);
+        }
+
+        .health-card.risk-high::before {
+            background: var(--gradient-warning);
+        }
+
+        .health-card.risk-moderate::before {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .health-card.risk-low::before {
+            background: var(--gradient-success);
+        }
+
+        .health-card-body {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .feature-icon.risk {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            color: var(--danger);
+        }
+
+        .feature-icon.disease {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 82, 204, 0.1) 100%);
+            color: var(--primary);
+        }
+
+        .feature-icon.allergy {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+            color: var(--warning);
+        }
+
+        .health-card h5 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-patient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge-critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-high {
+            background: rgba(251, 191, 36, 0.1);
+            color: #d97706;
+        }
+
+        .badge-moderate {
+            background: rgba(251, 191, 36, 0.1);
+            color: #f59e0b;
+        }
+
+        .badge-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .card-description {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-view-details {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient-hero);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view-details:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 102, 255, 0.3);
+            color: white;
+        }
+
+        /* Detail Cards */
+        .detail-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-card-header {
+            background: var(--gradient-patient);
+            padding: 1.25rem 1.5rem;
+            color: white;
+        }
+
+        .detail-card-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .detail-card-body {
+            padding: 1.5rem;
+        }
+
+        /* Table Styling */
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .detail-table thead th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .detail-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .detail-table tbody tr:hover {
+            background: rgba(0, 102, 255, 0.03);
+        }
+
+        .frequency-badge {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--secondary-dark);
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-badge.chronic {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .status-badge.recurring {
+            background: rgba(100, 116, 139, 0.1);
+            color: #64748b;
+        }
+
+        /* Alert List */
+        .alert-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .alert-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-item:hover {
+            background: rgba(0, 102, 255, 0.03);
+        }
+
+        .alert-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-medicine {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .alert-type-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .alert-type-badge.allergy {
+            background: rgba(251, 191, 36, 0.1);
+            color: var(--warning);
+        }
+
+        .alert-type-badge.side-effect {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .alert-description {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        /* How It Works */
+        .how-it-works-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 3rem;
+        }
+
+        .how-it-works-card h5 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .how-it-works-card h5 i {
+            color: var(--primary);
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .works-item h6 {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .works-item p {
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* Back Button */
+        .back-button-container {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .btn-back-main {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            color: var(--dark);
+            border: 2px solid #e2e8f0;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back-main:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .health-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .works-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/">🏥 Medisync</a>
+            <a href="/patient/dashboard" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                <i class="fas fa-brain"></i>
+                Health Intelligence Dashboard
+            </h1>
+            <p>Advanced health insights powered by AI pattern detection</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Recommendations Alert -->
+        <% if (report.recommendations && report.recommendations.length > 0) { %>
+            <div class="alert-recommendations">
+                <h4><i class="fas fa-exclamation-triangle"></i> Health Recommendations</h4>
+                <% report.recommendations.forEach(rec => { %>
+                    <div class="recommendation-item">
+                        <span class="recommendation-type"><%= rec.type %>:</span> <%= rec.message %>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+
+        <!-- Health Overview Cards -->
+        <div class="health-cards-grid">
+            <!-- Health Risk Score -->
+            <div class="health-card risk-<%= report.riskScore.risk_level %>">
+                <div class="health-card-body">
+                    <div class="feature-icon risk">
+                        <i class="fas fa-heart-pulse"></i>
+                    </div>
+                    <h5>Health Risk Score</h5>
+                    <div class="stat-number"><%= report.riskScore.risk_score %>/100</div>
+                    <span class="risk-badge badge-<%= report.riskScore.risk_level %>">
+                        <%= report.riskScore.risk_level.toUpperCase() %>
+                    </span>
+                    <p class="card-description">
+                        Based on medicine frequency, disease patterns, and age
+                    </p>
+                    <a href="/health-intelligence/health-risk-score" class="btn-view-details">
+                        <i class="fas fa-chart-line"></i> View Details
+                    </a>
+                </div>
+            </div>
+
+            <!-- Disease Patterns -->
+            <div class="health-card">
+                <div class="health-card-body">
+                    <div class="feature-icon disease">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h5>Disease Patterns</h5>
+                    <div class="stat-number"><%= report.diseasePatterns.length %></div>
+                    <p class="card-description">Conditions detected in last 6 months</p>
+                    <% if (report.diseasePatterns.some(d => d.is_chronic)) { %>
+                        <span class="risk-badge badge-critical">Chronic conditions found</span>
+                    <% } else { %>
+                        <span class="risk-badge badge-low">No chronic conditions</span>
+                    <% } %>
+                    <p class="card-description mt-2">AI detected repeating diseases</p>
+                    <a href="/health-intelligence/disease-patterns" class="btn-view-details">
+                        <i class="fas fa-chart-bar"></i> View Trends
+                    </a>
+                </div>
+            </div>
+
+            <!-- Allergy Detection -->
+            <div class="health-card">
+                <div class="health-card-body">
+                    <div class="feature-icon allergy">
+                        <i class="fas fa-flask-vial"></i>
+                    </div>
+                    <h5>Allergy Detection</h5>
+                    <div class="stat-number"><%= report.allergyRisks.prescriptionRisks.length + report.allergyRisks.knownSideEffects.length %></div>
+                    <p class="card-description">Medications flagged</p>
+                    <% if (report.allergyRisks.prescriptionRisks.length > 0) { %>
+                        <span class="risk-badge badge-high">Allergies detected</span>
+                    <% } else { %>
+                        <span class="risk-badge badge-low">No allergies detected</span>
+                    <% } %>
+                    <p class="card-description mt-2">Side effects warnings</p>
+                    <a href="/health-intelligence/allergy-detection" class="btn-view-details">
+                        <i class="fas fa-exclamation-triangle"></i> View Alerts
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Overview -->
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        <h5><i class="fas fa-chart-bar"></i> Recent Disease Patterns</h5>
+                    </div>
+                    <div class="detail-card-body">
+                        <% if (report.diseasePatterns.length > 0) { %>
+                            <div class="table-responsive">
+                                <table class="detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Disease</th>
+                                            <th>Frequency</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% report.diseasePatterns.slice(0, 5).forEach(pattern => { %>
+                                            <tr>
+                                                <td><strong><%= pattern.disease_name %></strong></td>
+                                                <td><span class="frequency-badge"><%= pattern.frequency %> times</span></td>
+                                                <td>
+                                                    <% if (pattern.is_chronic) { %>
+                                                        <span class="status-badge chronic">Chronic</span>
+                                                    <% } else { %>
+                                                        <span class="status-badge recurring">Recurring</span>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fas fa-chart-line"></i>
+                                <p>No disease patterns detected in the last 6 months</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Medicine Alerts</h5>
+                    </div>
+                    <div class="detail-card-body">
+                        <% if (report.allergyRisks.prescriptionRisks.length > 0 || report.allergyRisks.knownSideEffects.length > 0) { %>
+                            <ul class="alert-list">
+                                <% report.allergyRisks.prescriptionRisks.slice(0, 3).forEach(risk => { %>
+                                    <li class="alert-item">
+                                        <div class="alert-item-header">
+                                            <span class="alert-medicine"><%= risk.medicine_name %></span>
+                                            <span class="alert-type-badge allergy">Allergy Reported</span>
+                                        </div>
+                                    </li>
+                                <% }); %>
+                                <% report.allergyRisks.knownSideEffects.slice(0, 3).forEach(effect => { %>
+                                    <li class="alert-item">
+                                        <div class="alert-item-header">
+                                            <span class="alert-medicine"><%= effect.medicine_name %></span>
+                                            <span class="alert-type-badge side-effect"><%= effect.severity %></span>
+                                        </div>
+                                        <div class="alert-description"><%= effect.side_effect %></div>
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fas fa-shield-alt"></i>
+                                <p>No medicine alerts detected</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="how-it-works-card">
+            <h5><i class="fas fa-info-circle"></i> How Health Intelligence Works</h5>
+            <div class="works-grid">
+                <div class="works-item">
+                    <h6>🔍 Disease Pattern Detection</h6>
+                    <p>Analyzes your medical history to detect chronic and recurring conditions within a 6-month window. Helps identify patterns you might not notice.</p>
+                </div>
+                <div class="works-item">
+                    <h6>🧬 Allergy Detection System</h6>
+                    <p>Flags medications that have caused allergic reactions or side effects. Warns doctors before prescribing similar medications.</p>
+                </div>
+                <div class="works-item">
+                    <h6>📊 Health Risk Score</h6>
+                    <p>Calculates your overall health risk (0-100) based on medicine frequency, disease patterns, age, and allergies. Helps prioritize preventive care.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-button-container">
+            <a href="/patient/dashboard" class="btn-back-main">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+        <p>© 2025 Medisync. Connecting Care, Predicting Health.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize dashboard cache on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize cache UI with controls
+            DashboardCache.initUI();
+            
+            // Log cache status for health intelligence dashboard
+            console.log('[Health Intelligence Dashboard] Cache initialized');
+            console.log('[Health Intelligence Dashboard] Cache Stats:', DashboardCache.getStats());
+            
+            // Cache the current dashboard data
+            DashboardCache.set('health_intelligence_dashboard', {
+                timestamp: new Date().toISOString(),
+                page: 'health_intelligence_dashboard'
+            }, DashboardCache.CONFIG.HEALTH_INTEL_TTL);
+        });
+
+        // Add fade-in animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .health-card, .detail-card, .alert-recommendations, .how-it-works-card {
+                animation: fadeInUp 0.6s ease forwards;
+            }
+            .health-card:nth-child(1) { animation-delay: 0.1s; }
+            .health-card:nth-child(2) { animation-delay: 0.2s; }
+            .health-card:nth-child(3) { animation-delay: 0.3s; }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

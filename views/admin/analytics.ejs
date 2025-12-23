@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics – Medisync Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --secondary: #00d4aa;
+            --secondary-dark: #00a8cc;
+            --accent: #ff6b6b;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --success: #10b981;
+            --info: #3b82f6;
+            --dark: #1a1a2e;
+            --light: #f8fafc;
+            --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+            --gradient-admin: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-analytics: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #ec4899 100%);
+            --gradient-chart-1: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --gradient-chart-2: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+            --gradient-trend: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-admin);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-back {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--gradient-analytics);
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Chart Cards */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 992px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-card-header {
+            padding: 1.25rem 1.5rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chart-card-header.medicines {
+            background: var(--gradient-chart-1);
+        }
+
+        .chart-card-header.diseases {
+            background: var(--gradient-chart-2);
+        }
+
+        .chart-card-header.trend {
+            background: var(--gradient-trend);
+        }
+
+        .chart-card-header.risk {
+            background: var(--gradient-danger);
+        }
+
+        .chart-card-header h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-card-body {
+            padding: 1.5rem;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .table-card-header {
+            background: var(--gradient-danger);
+            padding: 1.25rem 1.5rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-card-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0;
+        }
+
+        .table-card-header .badge-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.35rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .custom-table thead {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .custom-table th {
+            padding: 1rem 1.25rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .custom-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background: rgba(239, 68, 68, 0.03);
+        }
+
+        .medicine-name {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .medicine-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ef4444;
+            font-size: 1rem;
+        }
+
+        .medicine-text {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .count-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 0.4rem 0.85rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .risk-badge {
+            padding: 0.4rem 0.85rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .risk-badge.critical {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+        }
+
+        .risk-badge.high {
+            background: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+        }
+
+        .risk-badge.moderate {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .empty-state {
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: #ef4444;
+            margin: 0 auto 1.25rem;
+        }
+
+        .empty-state h4 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #64748b;
+        }
+
+        /* Full Width Chart */
+        .trend-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .trend-card-header {
+            background: var(--gradient-trend);
+            padding: 1.25rem 1.5rem;
+            color: white;
+        }
+
+        .trend-card-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0;
+        }
+
+        .trend-card-body {
+            padding: 1.5rem;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chart-card, .table-card, .trend-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .chart-card:nth-child(1) { animation-delay: 0.1s; }
+        .chart-card:nth-child(2) { animation-delay: 0.15s; }
+        .table-card { animation-delay: 0.2s; }
+        .trend-card { animation-delay: 0.25s; }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/">🛡️ Medisync Admin</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/admin/dashboard" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <form method="post" action="/admin/logout" class="d-inline m-0">
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                <div class="header-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                Medicine & Prescription Analytics
+            </h1>
+            <p>Comprehensive insights into medicine usage patterns and prescription trends</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <!-- Charts Grid -->
+        <div class="chart-grid">
+            <!-- Top Medicines Chart -->
+            <div class="chart-card">
+                <div class="chart-card-header medicines">
+                    <h5>
+                        <i class="fas fa-pills"></i>
+                        Top 10 Prescribed Medicines
+                    </h5>
+                </div>
+                <div class="chart-card-body">
+                    <canvas id="topMedicinesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top Diseases Chart -->
+            <div class="chart-card">
+                <div class="chart-card-header diseases">
+                    <h5>
+                        <i class="fas fa-heartbeat"></i>
+                        Top 10 Diagnosed Diseases
+                    </h5>
+                </div>
+                <div class="chart-card-body">
+                    <canvas id="topDiseasesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Medicines Table -->
+        <div class="table-card">
+            <div class="table-card-header">
+                <h5>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    High-Risk Medicines
+                </h5>
+                <span class="badge-count">5+ prescriptions</span>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-capsules me-2"></i>Medicine Name</th>
+                            <th><i class="fas fa-hashtag me-2"></i>Times Prescribed</th>
+                            <th><i class="fas fa-shield-alt me-2"></i>Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (riskMedicines && riskMedicines.length > 0) { %>
+                            <% riskMedicines.forEach(m => { %>
+                                <tr>
+                                    <td>
+                                        <div class="medicine-name">
+                                            <div class="medicine-icon">
+                                                <i class="fas fa-prescription-bottle-alt"></i>
+                                            </div>
+                                            <span class="medicine-text"><%= m.medicine_name %></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="count-badge">
+                                            <i class="fas fa-prescription"></i>
+                                            <%= m.count %> times
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <% if (m.count >= 10) { %>
+                                            <span class="risk-badge critical">
+                                                <i class="fas fa-radiation"></i> Critical
+                                            </span>
+                                        <% } else if (m.count >= 7) { %>
+                                            <span class="risk-badge high">
+                                                <i class="fas fa-exclamation-circle"></i> High
+                                            </span>
+                                        <% } else { %>
+                                            <span class="risk-badge moderate">
+                                                <i class="fas fa-info-circle"></i> Moderate
+                                            </span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="3">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <h4>All Clear!</h4>
+                                        <p>No high-risk medicines detected in the system</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Prescription Trend Chart -->
+        <div class="trend-card">
+            <div class="trend-card-header">
+                <h5>
+                    <i class="fas fa-chart-line"></i>
+                    Prescription Trend (Last 6 Months)
+                </h5>
+            </div>
+            <div class="trend-card-body">
+                <canvas id="trendChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+        <p>© 2025 Medisync Admin Panel. Connecting Care, Predicting Health.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Chart.js default styling
+        Chart.defaults.font.family = 'Inter, sans-serif';
+        Chart.defaults.font.weight = 500;
+        Chart.defaults.color = '#64748b';
+
+        // Top Medicines Chart
+        new Chart(document.getElementById('topMedicinesChart'), {
+            type: 'bar',
+            data: {
+                labels: <%= JSON.stringify(topMedicines.map(m => m.medicine_name)) %>,
+                datasets: [{
+                    label: 'Times Prescribed',
+                    data: <%= JSON.stringify(topMedicines.map(m => m.count)) %>,
+                    backgroundColor: [
+                        'rgba(6, 182, 212, 0.8)',
+                        'rgba(14, 165, 233, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(99, 102, 241, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(168, 85, 247, 0.8)',
+                        'rgba(192, 132, 252, 0.8)',
+                        'rgba(217, 70, 239, 0.8)',
+                        'rgba(236, 72, 153, 0.8)',
+                        'rgba(244, 63, 94, 0.8)'
+                    ],
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Top Diseases Chart
+        new Chart(document.getElementById('topDiseasesChart'), {
+            type: 'bar',
+            data: {
+                labels: <%= JSON.stringify(topDiseases.map(d => d.disease_name)) %>,
+                datasets: [{
+                    label: 'Cases Diagnosed',
+                    data: <%= JSON.stringify(topDiseases.map(d => d.count)) %>,
+                    backgroundColor: [
+                        'rgba(244, 63, 94, 0.8)',
+                        'rgba(236, 72, 153, 0.8)',
+                        'rgba(217, 70, 239, 0.8)',
+                        'rgba(192, 132, 252, 0.8)',
+                        'rgba(168, 85, 247, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(99, 102, 241, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(14, 165, 233, 0.8)',
+                        'rgba(6, 182, 212, 0.8)'
+                    ],
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Trend Chart
+        new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: <%= JSON.stringify(prescriptionTrend.map(t => new Date(t.month).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }))) %>,
+                datasets: [{
+                    label: 'Prescriptions per Month',
+                    data: <%= JSON.stringify(prescriptionTrend.map(t => t.count)) %>,
+                    borderColor: 'rgba(99, 102, 241, 1)',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: 'rgba(99, 102, 241, 1)',
+                    pointBorderColor: 'white',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 8
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

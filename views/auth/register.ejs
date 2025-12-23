@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register – Medisync</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --accent: #ff6b6b;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+      --gradient-3: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      opacity: 0.05;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Header */
+    .register-header {
+      background: var(--gradient-hero);
+      padding: 1.5rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .register-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+      animation: rotate 30s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .navbar-brand {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: white !important;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-btn {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.15);
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      transform: translateX(-5px);
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: var(--gradient-hero);
+      padding: 3rem 0;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: var(--light);
+      border-radius: 50% 50% 0 0;
+    }
+
+    .hero-banner h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .hero-banner p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Role Selection Tabs */
+    .role-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: -30px auto 2rem;
+      position: relative;
+      z-index: 10;
+      max-width: 500px;
+      padding: 0 1rem;
+    }
+
+    .role-tab {
+      flex: 1;
+      padding: 1.25rem 1.5rem;
+      background: white;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .role-tab:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .role-tab.active {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.05) 0%, rgba(0, 212, 170, 0.05) 100%);
+    }
+
+    .role-tab.patient.active {
+      border-color: var(--primary);
+    }
+
+    .role-tab.doctor.active {
+      border-color: var(--secondary);
+    }
+
+    .role-tab-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .role-tab-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .role-tab-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 2rem 0 4rem;
+    }
+
+    .registration-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    /* Form Card */
+    .form-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      flex: 1;
+    }
+
+    .form-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    .form-header-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .form-header-icon.patient {
+      background: var(--gradient-hero);
+    }
+
+    .form-header-icon.doctor {
+      background: var(--gradient-2);
+    }
+
+    .form-header-text h3 {
+      font-weight: 700;
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .form-header-text p {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .form-label .required {
+      color: var(--accent);
+    }
+
+    .input-group-custom {
+      position: relative;
+    }
+
+    .input-group-custom i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    .form-control-custom:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+    }
+
+    .form-control-custom:focus ~ i,
+    .input-group-custom:focus-within i {
+      color: var(--primary);
+    }
+
+    .form-select-custom {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+
+    .form-select-custom:focus {
+      outline: none;
+      border-color: var(--primary);
+      background-color: white;
+      box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
+    }
+
+    .form-row-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+
+    .password-toggle:hover {
+      color: var(--primary);
+    }
+
+    /* Buttons */
+    .btn-register {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-register.patient {
+      background: var(--gradient-hero);
+      color: white;
+    }
+
+    .btn-register.doctor {
+      background: var(--gradient-2);
+      color: white;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0, 102, 255, 0.3);
+    }
+
+    /* Info Badge */
+    .info-badge {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+
+    .info-badge i {
+      color: #667eea;
+      font-size: 1.25rem;
+      margin-top: 2px;
+    }
+
+    .info-badge p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* Benefits Panel */
+    .benefits-panel {
+      flex: 0 0 350px;
+      background: var(--dark);
+      border-radius: 24px;
+      padding: 2.5rem;
+      color: white;
+      position: sticky;
+      top: 2rem;
+    }
+
+    .benefits-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .benefits-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .benefit-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
+    }
+
+    .benefit-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .benefit-icon.blue { background: rgba(0, 102, 255, 0.2); color: #60a5fa; }
+    .benefit-icon.green { background: rgba(0, 212, 170, 0.2); color: #34d399; }
+    .benefit-icon.purple { background: rgba(102, 126, 234, 0.2); color: #a78bfa; }
+    .benefit-icon.red { background: rgba(255, 107, 107, 0.2); color: #f87171; }
+    .benefit-icon.yellow { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+
+    .benefit-text h5 {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .benefit-text p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .trust-badges {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .trust-badge {
+      flex: 1;
+      text-align: center;
+    }
+
+    .trust-badge i {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .trust-badge span {
+      display: block;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Login Link */
+    .login-link {
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 1rem;
+      color: #64748b;
+    }
+
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .login-link a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    /* Password Strength */
+    .password-strength {
+      margin-top: 0.5rem;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      width: 0;
+    }
+
+    .password-strength-bar.weak { width: 33%; background: var(--accent); }
+    .password-strength-bar.medium { width: 66%; background: #fbbf24; }
+    .password-strength-bar.strong { width: 100%; background: var(--secondary); }
+
+    .password-hint {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+
+    /* Terms Checkbox */
+    .terms-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .terms-check input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .terms-check label {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .terms-check a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .terms-check a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .form-row {
+        flex-direction: column;
+      }
+
+      .benefits-panel {
+        flex: auto;
+        position: static;
+      }
+
+      .role-tabs {
+        flex-direction: row;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .form-card {
+        padding: 1.5rem;
+      }
+
+      .form-row-split {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-banner h1 {
+        font-size: 1.8rem;
+      }
+
+      .role-tabs {
+        flex-direction: column;
+      }
+
+      .trust-badges {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-container {
+      display: none;
+    }
+
+    .form-container.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <!-- Header -->
+  <header class="register-header">
+    <div class="container">
+      <div class="header-content d-flex justify-content-between align-items-center">
+        <a href="/" class="navbar-brand">🏥 Medisync</a>
+        <a href="/" class="back-btn">
+          <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero-banner">
+    <div class="container">
+      <h1>Create Your Account</h1>
+      <p>Join thousands of users experiencing the future of healthcare with AI-powered insights and seamless consultations</p>
+    </div>
+  </section>
+
+  <!-- Role Selection Tabs -->
+  <div class="role-tabs">
+    <div class="role-tab patient active" onclick="switchRole('patient')">
+      <div class="role-tab-icon">👤</div>
+      <div class="role-tab-title">I'm a Patient</div>
+      <div class="role-tab-desc">Book appointments & get insights</div>
+    </div>
+    <div class="role-tab doctor" onclick="switchRole('doctor')">
+      <div class="role-tab-icon">👨‍⚕️</div>
+      <div class="role-tab-title">I'm a Doctor</div>
+      <div class="role-tab-desc">Manage patients & consultations</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="registration-container">
+      <div class="form-row">
+        <!-- Form Cards -->
+        <div class="form-card fade-in">
+          <!-- Patient Form -->
+          <div class="form-container active" id="patient-form">
+            <div class="form-header">
+              <div class="form-header-icon patient">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="form-header-text">
+                <h3>Patient Registration</h3>
+                <p>Fill in your details to create your patient account</p>
+              </div>
+            </div>
+
+            <form method="post" action="/auth/patient/register">
+              <div class="form-row-split">
+                <div class="form-group">
+                  <label class="form-label">Full Name <span class="required">*</span></label>
+                  <div class="input-group-custom">
+                    <input type="text" class="form-control-custom" name="name" placeholder="Enter your full name" required>
+                    <i class="fas fa-user"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email Address <span class="required">*</span></label>
+                  <div class="input-group-custom">
+                    <input type="email" class="form-control-custom" name="email" placeholder="your@email.com" required>
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Password <span class="required">*</span></label>
+                <div class="input-group-custom">
+                  <input type="password" class="form-control-custom" name="password" id="patient-password" placeholder="Create a strong password" required minlength="6" onkeyup="checkPasswordStrength(this, 'patient')">
+                  <i class="fas fa-lock"></i>
+                  <button type="button" class="password-toggle" onclick="togglePassword('patient-password', 'patient-toggle-icon')">
+                    <i class="fas fa-eye" id="patient-toggle-icon"></i>
+                  </button>
+                </div>
+                <div class="password-strength">
+                  <div class="password-strength-bar" id="patient-strength-bar"></div>
+                </div>
+                <div class="password-hint">Use at least 6 characters with letters and numbers</div>
+              </div>
+
+              <div class="form-row-split">
+                <div class="form-group">
+                  <label class="form-label">Age</label>
+                  <div class="input-group-custom">
+                    <input type="number" class="form-control-custom" name="age" placeholder="Your age" min="1" max="120">
+                    <i class="fas fa-calendar"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Gender</label>
+                  <div class="input-group-custom">
+                    <select class="form-select-custom" name="gender">
+                      <option value="">Select gender</option>
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <i class="fas fa-venus-mars"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row-split">
+                <div class="form-group">
+                  <label class="form-label">Blood Group</label>
+                  <div class="input-group-custom">
+                    <select class="form-select-custom" name="blood_group">
+                      <option value="">Select blood group</option>
+                      <option>O+</option>
+                      <option>O-</option>
+                      <option>A+</option>
+                      <option>A-</option>
+                      <option>B+</option>
+                      <option>B-</option>
+                      <option>AB+</option>
+                      <option>AB-</option>
+                    </select>
+                    <i class="fas fa-tint"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number</label>
+                  <div class="input-group-custom">
+                    <input type="tel" class="form-control-custom" name="phone" placeholder="+1 234 567 8900">
+                    <i class="fas fa-phone"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="terms-check">
+                <input type="checkbox" id="patient-terms" required>
+                <label for="patient-terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+              </div>
+
+              <button type="submit" class="btn-register patient">
+                <i class="fas fa-user-plus"></i> Create Patient Account
+              </button>
+            </form>
+          </div>
+
+          <!-- Doctor Form -->
+          <div class="form-container" id="doctor-form">
+            <div class="form-header">
+              <div class="form-header-icon doctor">
+                <i class="fas fa-user-md"></i>
+              </div>
+              <div class="form-header-text">
+                <h3>Doctor Registration</h3>
+                <p>Join our network of verified healthcare professionals</p>
+              </div>
+            </div>
+
+            <form method="post" action="/auth/doctor/register">
+              <div class="form-row-split">
+                <div class="form-group">
+                  <label class="form-label">Full Name <span class="required">*</span></label>
+                  <div class="input-group-custom">
+                    <input type="text" class="form-control-custom" name="name" placeholder="Dr. John Smith" required>
+                    <i class="fas fa-user-md"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email Address <span class="required">*</span></label>
+                  <div class="input-group-custom">
+                    <input type="email" class="form-control-custom" name="email" placeholder="doctor@email.com" required>
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Specialization <span class="required">*</span></label>
+                <div class="input-group-custom">
+                  <select class="form-select-custom" name="specialization" required>
+                    <option value="">Select your specialization</option>
+                    <option value="General Physician">General Physician</option>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Dermatology">Dermatology</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Orthopedics">Orthopedics</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Psychiatry">Psychiatry</option>
+                    <option value="Gynecology">Gynecology</option>
+                    <option value="Ophthalmology">Ophthalmology</option>
+                    <option value="ENT">ENT</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <i class="fas fa-stethoscope"></i>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Password <span class="required">*</span></label>
+                <div class="input-group-custom">
+                  <input type="password" class="form-control-custom" name="password" id="doctor-password" placeholder="Create a strong password" required minlength="6" onkeyup="checkPasswordStrength(this, 'doctor')">
+                  <i class="fas fa-lock"></i>
+                  <button type="button" class="password-toggle" onclick="togglePassword('doctor-password', 'doctor-toggle-icon')">
+                    <i class="fas fa-eye" id="doctor-toggle-icon"></i>
+                  </button>
+                </div>
+                <div class="password-strength">
+                  <div class="password-strength-bar" id="doctor-strength-bar"></div>
+                </div>
+                <div class="password-hint">Use at least 6 characters with letters and numbers</div>
+              </div>
+
+              <div class="form-row-split">
+                <div class="form-group">
+                  <label class="form-label">Years of Experience</label>
+                  <div class="input-group-custom">
+                    <input type="number" class="form-control-custom" name="experience" placeholder="e.g., 5" min="0">
+                    <i class="fas fa-briefcase"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">License Number</label>
+                  <div class="input-group-custom">
+                    <input type="text" class="form-control-custom" name="license" placeholder="Medical license #">
+                    <i class="fas fa-id-card"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Clinic/Hospital Name</label>
+                <div class="input-group-custom">
+                  <input type="text" class="form-control-custom" name="hospital" placeholder="Where do you practice?">
+                  <i class="fas fa-hospital"></i>
+                </div>
+              </div>
+
+              <div class="info-badge">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Verification Required:</strong> Your account will be reviewed by our admin team. You'll receive an email once your credentials are verified (usually within 24-48 hours).</p>
+              </div>
+
+              <div class="terms-check">
+                <input type="checkbox" id="doctor-terms" required>
+                <label for="doctor-terms">I agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>, and <a href="#">Medical Provider Guidelines</a></label>
+              </div>
+
+              <button type="submit" class="btn-register doctor">
+                <i class="fas fa-user-md"></i> Submit for Verification
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Benefits Panel -->
+        <aside class="benefits-panel fade-in">
+          <h4 class="benefits-title">Why Choose Medisync?</h4>
+          <p class="benefits-subtitle">Join our growing community of healthcare excellence</p>
+
+          <div class="benefit-item">
+            <div class="benefit-icon blue">
+              <i class="fas fa-brain"></i>
+            </div>
+            <div class="benefit-text">
+              <h5>AI-Powered Insights</h5>
+              <p>Get intelligent health predictions based on your medical history</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon green">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="benefit-text">
+              <h5>Bank-Level Security</h5>
+              <p>Your data is encrypted and protected with enterprise-grade security</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon purple">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="benefit-text">
+              <h5>24/7 Availability</h5>
+              <p>Access your health records and book appointments anytime</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon red">
+              <i class="fas fa-file-prescription"></i>
+            </div>
+            <div class="benefit-text">
+              <h5>Digital Prescriptions</h5>
+              <p>Receive and manage prescriptions digitally with smart alerts</p>
+            </div>
+          </div>
+
+          <div class="benefit-item">
+            <div class="benefit-icon yellow">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="benefit-text">
+              <h5>Health Analytics</h5>
+              <p>Track your health journey with visual reports and trends</p>
+            </div>
+          </div>
+
+          <div class="trust-badges">
+            <div class="trust-badge">
+              <i class="fas fa-user-check"></i>
+              <span>10K+ Users</span>
+            </div>
+            <div class="trust-badge">
+              <i class="fas fa-user-md"></i>
+              <span>500+ Doctors</span>
+            </div>
+            <div class="trust-badge">
+              <i class="fas fa-star"></i>
+              <span>4.9 Rating</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="login-link">
+        Already have an account? <a href="/auth/login">Sign in here</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function switchRole(role) {
+      // Update tabs
+      document.querySelectorAll('.role-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelector(`.role-tab.${role}`).classList.add('active');
+
+      // Update forms
+      document.querySelectorAll('.form-container').forEach(form => form.classList.remove('active'));
+      document.getElementById(`${role}-form`).classList.add('active');
+    }
+
+    function togglePassword(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    function checkPasswordStrength(input, type) {
+      const password = input.value;
+      const strengthBar = document.getElementById(`${type}-strength-bar`);
+      
+      let strength = 0;
+      if (password.length >= 6) strength++;
+      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+      if (password.match(/[0-9]/)) strength++;
+      if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+      strengthBar.className = 'password-strength-bar';
+      if (password.length === 0) {
+        strengthBar.style.width = '0';
+      } else if (strength <= 1) {
+        strengthBar.classList.add('weak');
+      } else if (strength <= 2) {
+        strengthBar.classList.add('medium');
+      } else {
+        strengthBar.classList.add('strong');
+      }
+    }
+
+    // Focus effect for inputs
+    document.querySelectorAll('.form-control-custom, .form-select-custom').forEach(input => {
+      input.addEventListener('focus', function() {
+        this.closest('.input-group-custom').classList.add('focused');
+      });
+      input.addEventListener('blur', function() {
+        this.closest('.input-group-custom').classList.remove('focused');
+      });
+    });
+  </script>
+</body>
+</html>

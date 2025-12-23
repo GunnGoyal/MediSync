@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login – Medisync</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --accent: #ff6b6b;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-2: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+      --gradient-admin: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* Left Visual Panel */
+    .visual-panel {
+      flex: 0 0 45%;
+      background: var(--gradient-admin);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .visual-panel::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+      animation: rotate 25s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .visual-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+    }
+
+    .visual-logo {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+    }
+
+    .visual-title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    }
+
+    .visual-subtitle {
+      font-size: 1.15rem;
+      opacity: 0.9;
+      margin-bottom: 3rem;
+    }
+
+    .visual-features {
+      text-align: left;
+      max-width: 300px;
+    }
+
+    .visual-feature {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .visual-feature:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+
+    .visual-feature i {
+      font-size: 1.25rem;
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .visual-feature span {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    /* Floating Shapes */
+    .floating-shape {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .shape-1 { width: 150px; height: 150px; top: 5%; left: 10%; animation-delay: 0s; }
+    .shape-2 { width: 200px; height: 200px; bottom: 10%; right: 5%; animation-delay: 2s; }
+    .shape-3 { width: 100px; height: 100px; top: 50%; left: 5%; animation-delay: 4s; }
+    .shape-4 { width: 70px; height: 70px; top: 25%; right: 15%; animation-delay: 1s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* Right Form Panel */
+    .form-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      background: var(--light);
+      position: relative;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--dark);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      color: #667eea;
+      transform: translateX(-5px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .form-header-icon {
+      width: 90px;
+      height: 90px;
+      background: var(--gradient-admin);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      margin: 0 auto 1.25rem;
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .form-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+      color: #64748b;
+      font-size: 1rem;
+    }
+
+    .form-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .input-group-custom {
+      position: relative;
+    }
+
+    .input-group-custom i.input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+
+    .form-control-custom {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    .form-control-custom:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+    }
+
+    .form-control-custom:focus ~ i.input-icon,
+    .input-group-custom:focus-within i.input-icon {
+      color: #667eea;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+
+    .password-toggle:hover {
+      color: #667eea;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 1rem;
+      background: var(--gradient-admin);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    .security-note {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: rgba(102, 126, 234, 0.08);
+      border-radius: 12px;
+      margin-top: 1.5rem;
+    }
+
+    .security-note i {
+      color: #667eea;
+      font-size: 1.25rem;
+    }
+
+    .security-note span {
+      font-size: 0.85rem;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    .form-footer {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .form-footer p {
+      color: #64748b;
+    }
+
+    .form-footer a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .form-footer a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      body {
+        flex-direction: column;
+      }
+
+      .visual-panel {
+        flex: none;
+        min-height: 300px;
+        padding: 2rem;
+      }
+
+      .visual-title {
+        font-size: 2rem;
+      }
+
+      .visual-features {
+        display: none;
+      }
+
+      .form-panel {
+        padding: 2rem;
+      }
+
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .form-card {
+        padding: 1.5rem;
+      }
+
+      .form-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-in {
+      animation: slideIn 0.8s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Left Visual Panel -->
+  <div class="visual-panel">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+    
+    <div class="visual-content slide-in">
+      <div class="visual-logo">🛡️</div>
+      <h1 class="visual-title">Admin Portal</h1>
+      <p class="visual-subtitle">Secure administrative access</p>
+      
+      <div class="visual-features">
+        <div class="visual-feature">
+          <i class="fas fa-users-cog"></i>
+          <span>Manage Users & Doctors</span>
+        </div>
+        <div class="visual-feature">
+          <i class="fas fa-chart-bar"></i>
+          <span>Platform Analytics</span>
+        </div>
+        <div class="visual-feature">
+          <i class="fas fa-clipboard-list"></i>
+          <span>Audit Logs & Security</span>
+        </div>
+        <div class="visual-feature">
+          <i class="fas fa-cogs"></i>
+          <span>System Configuration</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Form Panel -->
+  <div class="form-panel">
+    <a href="/" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div class="form-container fade-in">
+      <div class="form-header">
+        <div class="form-header-icon">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h1>Admin Login</h1>
+        <p>Enter your credentials to access the dashboard</p>
+      </div>
+
+      <div class="form-card">
+        <form method="post" action="/admin/login">
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <div class="input-group-custom">
+              <input type="text" class="form-control-custom" name="username" placeholder="Enter admin username" required>
+              <i class="fas fa-user input-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-group-custom">
+              <input type="password" class="form-control-custom" name="password" id="password" placeholder="Enter password" required>
+              <i class="fas fa-lock input-icon"></i>
+              <button type="button" class="password-toggle" onclick="togglePassword()">
+                <i class="fas fa-eye" id="toggleIcon"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-login">
+            <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+          </button>
+        </form>
+
+        <div class="security-note">
+          <i class="fas fa-shield-alt"></i>
+          <span>This is a protected area. All login attempts are monitored and logged for security purposes.</span>
+        </div>
+
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggleIcon');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    }
+
+    // Focus effect for inputs
+    document.querySelectorAll('.form-control-custom').forEach(input => {
+      input.addEventListener('focus', function() {
+        this.closest('.input-group-custom').classList.add('focused');
+      });
+      input.addEventListener('blur', function() {
+        this.closest('.input-group-custom').classList.remove('focused');
+      });
+    });
+  </script>
+</body>
+</html>

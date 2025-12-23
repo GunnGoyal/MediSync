@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Configuration – Medisync Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --primary-dark: #0052cc;
+            --secondary: #00d4aa;
+            --secondary-dark: #00a8cc;
+            --accent: #ff6b6b;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #1a1a2e;
+            --light: #f8fafc;
+            --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+            --gradient-admin: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-info: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-admin);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn-back {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--gradient-admin);
+            padding: 3rem 0;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        /* Config Card */
+        .config-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .config-card-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+            padding: 1.25rem 1.5rem;
+            color: white;
+        }
+
+        .config-card-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .config-card-body {
+            padding: 1.5rem;
+        }
+
+        /* Config Section */
+        .config-section {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.02) 0%, rgba(118, 75, 162, 0.02) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .config-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .config-section h6 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-section h6 i {
+            color: #667eea;
+        }
+
+        .config-description {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        /* Custom Switch */
+        .custom-switch {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .custom-switch .form-check-input {
+            width: 50px;
+            height: 26px;
+            border-radius: 50px;
+            border: 2px solid #e2e8f0;
+            background-color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .custom-switch .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .custom-switch .form-check-label {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        /* Custom Textarea */
+        .custom-textarea {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            resize: vertical;
+        }
+
+        .custom-textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        /* Save Button */
+        .btn-save {
+            background: var(--gradient-success);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Status Card */
+        .status-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .status-card-header {
+            padding: 1rem 1.25rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-card-header.info { background: var(--gradient-info); }
+        .status-card-header.success { background: var(--gradient-success); }
+        .status-card-header.primary { background: var(--gradient-admin); }
+
+        .status-card-header h6 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .status-card-body {
+            padding: 1.25rem;
+        }
+
+        .status-item {
+            margin-bottom: 1rem;
+        }
+
+        .status-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .status-value {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .status-badge.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .status-badge.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        /* Backup Button */
+        .btn-backup {
+            background: var(--gradient-success);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-backup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        /* System Info List */
+        .system-info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .system-info-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .system-info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .system-info-list li strong {
+            color: var(--dark);
+        }
+
+        .system-info-list li span {
+            color: #64748b;
+        }
+
+        /* Features Card */
+        .features-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-top: 2rem;
+        }
+
+        .features-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+            padding: 1.25rem 1.5rem;
+            color: white;
+        }
+
+        .features-header h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .features-body {
+            padding: 1.5rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .feature-item i {
+            color: var(--success);
+            font-size: 1rem;
+        }
+
+        .feature-item span {
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .page-footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .config-card, .status-card, .features-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .status-card:nth-child(1) { animation-delay: 0.1s; }
+        .status-card:nth-child(2) { animation-delay: 0.15s; }
+        .status-card:nth-child(3) { animation-delay: 0.2s; }
+    </style>
+</head>
+<body>
+    <div class="bg-animated"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/">🛡️ Medisync Admin</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/admin/dashboard" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <form method="post" action="/admin/logout" class="d-inline m-0">
+                    <button type="submit" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>
+                <i class="fas fa-cog"></i>
+                System Configuration
+            </h1>
+            <p>Manage platform-wide settings and maintenance</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <div class="row">
+            <!-- Configuration Form -->
+            <div class="col-lg-8">
+                <div class="config-card">
+                    <div class="config-card-header">
+                        <h5><i class="fas fa-sliders-h"></i> System Settings</h5>
+                    </div>
+                    <div class="config-card-body">
+                        <form method="post" action="/admin/config/update">
+                            <!-- Maintenance Mode -->
+                            <div class="config-section">
+                                <h6><i class="fas fa-tools"></i> Maintenance Mode</h6>
+                                <div class="custom-switch form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="maintenance_mode" id="maintenance_mode" 
+                                        value="on" <%= config && config.maintenance_mode ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="maintenance_mode">
+                                        Enable maintenance mode (users cannot access platform)
+                                    </label>
+                                </div>
+                                <p class="config-description">
+                                    <i class="fas fa-info-circle"></i> When enabled, only admins can access the system. Use this during updates or critical maintenance.
+                                </p>
+                            </div>
+
+                            <!-- System Notice -->
+                            <div class="config-section">
+                                <h6><i class="fas fa-bullhorn"></i> System Notice</h6>
+                                <textarea class="form-control custom-textarea" name="system_notice" rows="4" placeholder="Enter a notice for all users..."><%= config && config.system_notice ? config.system_notice : '' %></textarea>
+                                <p class="config-description">
+                                    <i class="fas fa-info-circle"></i> This message will be displayed to all users on the dashboard. Leave empty to disable notice.
+                                </p>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn-save">
+                                    <i class="fas fa-save"></i> Save Configuration
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status & Info -->
+            <div class="col-lg-4">
+                <!-- Maintenance Status -->
+                <div class="status-card">
+                    <div class="status-card-header info">
+                        <i class="fas fa-info-circle"></i>
+                        <h6>Current Status</h6>
+                    </div>
+                    <div class="status-card-body">
+                        <div class="status-item">
+                            <div class="status-label">Maintenance Mode</div>
+                            <% if (config && config.maintenance_mode) { %>
+                                <span class="status-badge danger">
+                                    <i class="fas fa-exclamation-circle"></i> ENABLED
+                                </span>
+                            <% } else { %>
+                                <span class="status-badge success">
+                                    <i class="fas fa-check-circle"></i> DISABLED
+                                </span>
+                            <% } %>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Last Updated</div>
+                            <div class="status-value">
+                                <i class="fas fa-clock"></i> <%= config && config.updated_at ? new Date(config.updated_at).toLocaleString() : 'Never' %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup Status -->
+                <div class="status-card">
+                    <div class="status-card-header success">
+                        <i class="fas fa-database"></i>
+                        <h6>Data Backup</h6>
+                    </div>
+                    <div class="status-card-body">
+                        <div class="status-item">
+                            <div class="status-label">Last Backup</div>
+                            <div class="status-value">
+                                <% if (config && config.last_backup) { %>
+                                    <i class="fas fa-clock"></i> <%= new Date(config.last_backup).toLocaleString() %>
+                                <% } else { %>
+                                    <i class="fas fa-times-circle"></i> No backups yet
+                                <% } %>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-backup mt-2" onclick="triggerBackup()">
+                            <i class="fas fa-download"></i> Trigger Backup Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Info -->
+                <div class="status-card">
+                    <div class="status-card-header primary">
+                        <i class="fas fa-server"></i>
+                        <h6>System Info</h6>
+                    </div>
+                    <div class="status-card-body">
+                        <ul class="system-info-list">
+                            <li><strong>Platform</strong> <span>Medisync</span></li>
+                            <li><strong>Version</strong> <span>1.0.0</span></li>
+                            <li><strong>Status</strong> <span class="text-success">Operational</span></li>
+                            <li><strong>Database</strong> <span>PostgreSQL</span></li>
+                            <li><strong>Role</strong> <span>Administrator</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Features -->
+        <div class="features-card">
+            <div class="features-header">
+                <h5><i class="fas fa-rocket"></i> Available Features</h5>
+            </div>
+            <div class="features-body">
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>User management (enable/disable accounts)</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Doctor verification workflow</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Appointment monitoring</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Prescription analytics</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Prediction oversight</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Audit logging</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Data backup & recovery</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>System-wide maintenance mode</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Security notifications</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Medicine usage analytics</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Disease trend tracking</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>User activity logs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+        <p>© 2025 Medisync Admin Panel. Connecting Care, Predicting Health.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function triggerBackup() {
+            if (!confirm('Trigger database backup now?')) return;
+            
+            fetch('/admin/backup', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ Backup triggered successfully!');
+                        location.reload();
+                    } else {
+                        alert('❌ Error: ' + data.message);
+                    }
+                })
+                .catch(err => alert('Error triggering backup: ' + err));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Prescriptions – Medisync</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0052cc;
+      --secondary: #00d4aa;
+      --secondary-dark: #00a8cc;
+      --accent: #ff6b6b;
+      --warning: #fbbf24;
+      --danger: #ef4444;
+      --success: #10b981;
+      --dark: #1a1a2e;
+      --light: #f8fafc;
+      --gradient-hero: linear-gradient(135deg, #0066ff 0%, #00d4aa 50%, #667eea 100%);
+      --gradient-patient: linear-gradient(135deg, #0066ff 0%, #0052cc 50%, #667eea 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* Animated Background */
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      opacity: 0.05;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Navbar */
+    .navbar-custom {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--gradient-hero);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .btn-back {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary);
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-back:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Page Header */
+    .page-header {
+      background: var(--gradient-patient);
+      padding: 3rem 0;
+      color: white;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(50%, -50%);
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      transform: translate(-50%, 50%);
+    }
+
+    .page-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .page-header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+
+    .header-stat {
+      text-align: center;
+    }
+
+    .header-stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .header-stat-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    /* Content Container */
+    .content-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+
+    /* View Toggle */
+    .view-toggle {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .view-btn {
+      background: white;
+      border: 2px solid #e2e8f0;
+      color: #64748b;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .view-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .view-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    /* Prescription Cards */
+    .prescriptions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .prescription-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: all 0.4s ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .prescription-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 102, 255, 0.15);
+    }
+
+    .prescription-header {
+      background: var(--gradient-patient);
+      padding: 1.25rem 1.5rem;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .medicine-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .medicine-name i {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .prescription-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.35rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .prescription-body {
+      padding: 1.5rem;
+    }
+
+    .prescription-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .prescription-detail:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .detail-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .detail-icon.dosage {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary);
+    }
+
+    .detail-icon.duration {
+      background: rgba(0, 212, 170, 0.1);
+      color: var(--secondary);
+    }
+
+    .detail-icon.doctor {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .detail-icon.instructions {
+      background: rgba(251, 191, 36, 0.1);
+      color: var(--warning);
+    }
+
+    .detail-content {
+      flex: 1;
+    }
+
+    .detail-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .prescription-footer {
+      padding: 1rem 1.5rem;
+      background: #f8fafc;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-download {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      background: var(--gradient-hero);
+      color: white;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 102, 255, 0.3);
+      color: white;
+    }
+
+    /* Table View */
+    .table-view {
+      display: none;
+    }
+
+    .table-view.active {
+      display: block;
+    }
+
+    .cards-view {
+      display: none;
+    }
+
+    .cards-view.active {
+      display: block;
+    }
+
+    .prescription-table-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .table-header {
+      background: var(--gradient-patient);
+      padding: 1.25rem 1.5rem;
+      color: white;
+    }
+
+    .table-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+
+    .prescription-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .prescription-table thead th {
+      background: #f8fafc;
+      padding: 1rem 1.25rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .prescription-table tbody td {
+      padding: 1.25rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .prescription-table tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    .prescription-table tbody tr:hover {
+      background: rgba(0, 102, 255, 0.03);
+    }
+
+    .medicine-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .medicine-icon-wrapper {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--gradient-patient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1rem;
+    }
+
+    .medicine-info h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 0;
+    }
+
+    .dosage-badge {
+      background: rgba(0, 102, 255, 0.1);
+      color: var(--primary);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .duration-badge {
+      background: rgba(0, 212, 170, 0.1);
+      color: var(--secondary-dark);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .doctor-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .doctor-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(102, 126, 234, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #667eea;
+      font-size: 0.75rem;
+    }
+
+    .instructions-cell {
+      max-width: 200px;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    .btn-download-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-download-sm:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+      color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .empty-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 212, 170, 0.1) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      font-size: 3.5rem;
+      animation: pulse-empty 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-empty {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.75rem;
+    }
+
+    .empty-state p {
+      color: #64748b;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-book {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--gradient-hero);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-book:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0, 102, 255, 0.3);
+      color: white;
+    }
+
+    /* Info Card */
+    .info-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .info-card h4 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-card h4 i {
+      color: var(--primary);
+    }
+
+    .info-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .info-item i {
+      color: var(--secondary);
+      margin-top: 4px;
+    }
+
+    .info-item span {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    /* Footer */
+    .page-footer {
+      text-align: center;
+      padding: 2rem;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 1.75rem;
+      }
+
+      .header-stats {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .prescriptions-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .view-toggle {
+        flex-wrap: wrap;
+      }
+
+      .prescription-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar-custom">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a class="navbar-brand" href="/">🏥 Medisync</a>
+      <a href="/patient/dashboard" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <h1>
+        <i class="fas fa-prescription-bottle-alt"></i>
+        My Prescriptions
+      </h1>
+      <p>View and download all your prescriptions from your doctors</p>
+      <div class="header-stats">
+        <div class="header-stat">
+          <div class="header-stat-number"><%= prescriptions ? prescriptions.length : 0 %></div>
+          <div class="header-stat-label">Total Prescriptions</div>
+        </div>
+        <div class="header-stat">
+          <div class="header-stat-number"><%= prescriptions ? [...new Set(prescriptions.map(p => p.doctor_name))].length : 0 %></div>
+          <div class="header-stat-label">Doctors</div>
+        </div>
+        <div class="header-stat">
+          <div class="header-stat-number"><%= prescriptions ? [...new Set(prescriptions.map(p => p.medicine_name))].length : 0 %></div>
+          <div class="header-stat-label">Unique Medicines</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-container">
+    <% if (prescriptions && prescriptions.length > 0) { %>
+      <!-- View Toggle -->
+      <div class="view-toggle">
+        <button class="view-btn active" onclick="showView('cards')">
+          <i class="fas fa-th-large"></i> Cards
+        </button>
+        <button class="view-btn" onclick="showView('table')">
+          <i class="fas fa-list"></i> Table
+        </button>
+      </div>
+
+      <!-- Cards View -->
+      <div class="cards-view active" id="cardsView">
+        <div class="prescriptions-grid">
+          <% prescriptions.forEach((p, index) => { %>
+            <div class="prescription-card" style="animation: fadeInUp 0.5s ease forwards; animation-delay: <%= index * 0.1 %>s; opacity: 0;">
+              <div class="prescription-header">
+                <div class="medicine-name">
+                  <i class="fas fa-pills"></i>
+                  <%= p.medicine_name %>
+                </div>
+                <span class="prescription-badge">Rx #<%= p.prescription_id %></span>
+              </div>
+              <div class="prescription-body">
+                <div class="prescription-detail">
+                  <div class="detail-icon dosage">
+                    <i class="fas fa-weight"></i>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-label">Dosage</div>
+                    <div class="detail-value"><%= p.dosage %></div>
+                  </div>
+                </div>
+                <div class="prescription-detail">
+                  <div class="detail-icon duration">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-label">Duration</div>
+                    <div class="detail-value"><%= p.duration %></div>
+                  </div>
+                </div>
+                <div class="prescription-detail">
+                  <div class="detail-icon doctor">
+                    <i class="fas fa-user-md"></i>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-label">Prescribed By</div>
+                    <div class="detail-value">Dr. <%= p.doctor_name %></div>
+                  </div>
+                </div>
+                <% if (p.instructions) { %>
+                  <div class="prescription-detail">
+                    <div class="detail-icon instructions">
+                      <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="detail-content">
+                      <div class="detail-label">Instructions</div>
+                      <div class="detail-value"><%= p.instructions %></div>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+              <div class="prescription-footer">
+                <a href="/patient/prescription/<%= p.prescription_id %>/pdf" class="btn-download">
+                  <i class="fas fa-file-pdf"></i> Download PDF
+                </a>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- Table View -->
+      <div class="table-view" id="tableView">
+        <div class="prescription-table-card">
+          <div class="table-header">
+            <h3><i class="fas fa-prescription"></i> All Prescriptions</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="prescription-table">
+              <thead>
+                <tr>
+                  <th>Medicine</th>
+                  <th>Dosage</th>
+                  <th>Duration</th>
+                  <th>Doctor</th>
+                  <th>Instructions</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% prescriptions.forEach(p => { %>
+                  <tr>
+                    <td>
+                      <div class="medicine-cell">
+                        <div class="medicine-icon-wrapper">
+                          <i class="fas fa-pills"></i>
+                        </div>
+                        <div class="medicine-info">
+                          <h4><%= p.medicine_name %></h4>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="dosage-badge"><%= p.dosage %></span></td>
+                    <td><span class="duration-badge"><%= p.duration %></span></td>
+                    <td>
+                      <div class="doctor-cell">
+                        <div class="doctor-avatar">
+                          <i class="fas fa-user-md"></i>
+                        </div>
+                        Dr. <%= p.doctor_name %>
+                      </div>
+                    </td>
+                    <td class="instructions-cell"><%= p.instructions || 'No special instructions' %></td>
+                    <td>
+                      <a href="/patient/prescription/<%= p.prescription_id %>/pdf" class="btn-download-sm">
+                        <i class="fas fa-download"></i> PDF
+                      </a>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Card -->
+      <div class="info-card">
+        <h4><i class="fas fa-info-circle"></i> Prescription Guidelines</h4>
+        <div class="info-list">
+          <div class="info-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Take medications exactly as prescribed by your doctor</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Complete the full course of medication</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Store medicines in a cool, dry place</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Contact your doctor if you experience side effects</span>
+          </div>
+        </div>
+      </div>
+
+    <% } else { %>
+      <!-- Empty State -->
+      <div class="empty-state">
+        <div class="empty-icon">
+          💊
+        </div>
+        <h3>No Prescriptions Yet</h3>
+        <p>You don't have any prescriptions at the moment. Book an appointment with a doctor to get started.</p>
+        <a href="/patient/book" class="btn-book">
+          <i class="fas fa-calendar-plus"></i> Book Appointment
+        </a>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    <p>© 2025 Medisync. Connecting Care, Predicting Health.</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // View toggle functionality
+    function showView(view) {
+      const cardsView = document.getElementById('cardsView');
+      const tableView = document.getElementById('tableView');
+      const buttons = document.querySelectorAll('.view-btn');
+      
+      buttons.forEach(btn => btn.classList.remove('active'));
+      
+      if (view === 'cards') {
+        cardsView.classList.add('active');
+        tableView.classList.remove('active');
+        buttons[0].classList.add('active');
+      } else {
+        cardsView.classList.remove('active');
+        tableView.classList.add('active');
+        buttons[1].classList.add('active');
+      }
+    }
+
+    // Fade in animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
